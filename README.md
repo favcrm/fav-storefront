@@ -1,6 +1,6 @@
 # FavCRM Storefront Template
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront&project-name=favcrm-storefront&repository-name=favcrm-storefront&env=VITE_FAVCRM_API_URL,VITE_FAVCRM_COMPANY_ID,VITE_SITE_URL&envDescription=FavCRM%20storefront%20configuration%20from%20app.favcrm.io&envLink=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront%23deployment-on-vercel)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront&project-name=favcrm-storefront&repository-name=favcrm-storefront&env=VITE_FAVCRM_COMPANY_ID,VITE_SITE_URL&envDescription=FavCRM%20storefront%20configuration%20from%20app.favcrm.io&envLink=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront%23deployment-on-vercel)
 
 A SvelteKit storefront template for using FavCRM as a headless customer service.
 It is based on the production shape of the StayInTouch storefront, generalized
@@ -37,9 +37,14 @@ for new merchants and configured for Vercel by default.
 
    | Variable                 | Value                                                                                                |
    | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-   | `VITE_FAVCRM_API_URL`    | `https://api.favcrm.io` for hosted FavCRM, or your API gateway URL for self-hosted/dev.              |
    | `VITE_FAVCRM_COMPANY_ID` | The workspace/company UUID from FavCRM. This scopes every storefront request through `X-Company-Id`. |
    | `VITE_SITE_URL`          | The public storefront URL, for example your Vercel production or preview URL.                        |
+
+   Optional values:
+
+   | Variable              | Value                                                                                   |
+   | --------------------- | --------------------------------------------------------------------------------------- |
+   | `VITE_FAVCRM_API_URL` | Defaults to `https://api.favcrm.io`. Override it only for a self-hosted or dev API URL. |
 
 6. Run locally:
 
@@ -139,9 +144,12 @@ The deploy flow should prompt for:
 
 | Variable                 | Value                                                                                               |
 | ------------------------ | --------------------------------------------------------------------------------------------------- |
-| `VITE_FAVCRM_API_URL`    | Use `https://api.favcrm.io` for hosted FavCRM.                                                      |
 | `VITE_FAVCRM_COMPANY_ID` | Copy this from the workspace or customer portal settings in [app.favcrm.io](https://app.favcrm.io). |
 | `VITE_SITE_URL`          | Use the production storefront URL. Update this after Vercel assigns or connects the final domain.   |
+
+`VITE_FAVCRM_API_URL` defaults to `https://api.favcrm.io`, so hosted FavCRM
+stores do not need to set it. Add it in Vercel only when pointing the storefront
+at a self-hosted or dev API gateway.
 
 Set the variables for Production and Preview environments. After changing
 environment variables in Vercel, redeploy so the new values are included in the
