@@ -135,6 +135,20 @@ The only local bootstrap fetch in this template is tenant/module config from
 `/v6/customer-portal/company/modules`, because the current SDK does not expose
 that helper yet.
 
+## Admin Page
+
+The template includes `/admin`, modeled after the production StayInTouch admin
+dashboard shell. It is intentionally storefront-safe:
+
+- it reads public customer portal data through `@favcrm/sdk`
+- it does not ship merchant admin API secrets to the browser
+- management links open the hosted merchant admin at
+  [app.favcrm.io](https://app.favcrm.io)
+
+Use `app.favcrm.io` for real product, booking, event, customer, promotion, and
+portal configuration. Keep private admin APIs and `FAVCRM_API_KEY` out of the
+Vite storefront runtime.
+
 ## Deployment on Vercel
 
 Use the **Deploy with Vercel** button above, or import

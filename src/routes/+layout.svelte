@@ -1,6 +1,6 @@
 <script lang="ts">
   import "../app.css";
-  import { LogIn, Menu, ShoppingBag, UserRound, X } from "lucide-svelte";
+  import { LayoutDashboard, LogIn, Menu, ShoppingBag, UserRound, X } from "lucide-svelte";
   import { page } from "$app/stores";
   import { authStore } from "$lib/stores/auth";
   import type { Snippet } from "svelte";
@@ -52,6 +52,9 @@
   <div class="header-actions">
     <a class="icon-button" href="/shop" aria-label="Shop">
       <ShoppingBag size={19} />
+    </a>
+    <a class="icon-button" href="/admin" aria-label="Admin dashboard">
+      <LayoutDashboard size={19} />
     </a>
     {#if $authStore.jwt}
       <a class="icon-button" href="/member" aria-label="Member profile">
