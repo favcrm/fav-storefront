@@ -107,7 +107,6 @@
         bind:this={inputRefs[i]}
         type="text"
         inputmode="numeric"
-        pattern="[0-9]*"
         maxlength="1"
         value={digits[i]}
         {disabled}
@@ -135,5 +134,5 @@
   {/if}
 
   <!-- Hidden input for form submission if needed -->
-  <input type="hidden" id={name} {name} {value} {required} />
+  <input type="hidden" id={name} {name} {value} aria-required={required} />
 </div>

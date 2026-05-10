@@ -37,7 +37,8 @@
 		bind:value
 		{min}
 		{max}
-		{required}
+		aria-required={required}
+		aria-invalid={error ? 'true' : undefined}
 		{disabled}
 		class={clsx('form-input', error && 'border-red-500 focus:border-red-500 focus:ring-red-500/10')}
 	/>

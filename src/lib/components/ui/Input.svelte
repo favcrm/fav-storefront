@@ -48,7 +48,8 @@
 		{type}
 		bind:value
 		{placeholder}
-		{required}
+		aria-required={required}
+		aria-invalid={error ? 'true' : undefined}
 		{disabled}
 		{oninput}
 		class={clsx(

@@ -244,7 +244,7 @@
 
 <!-- Manual Earn Modal -->
 <Modal bind:open={showEarnModal} title="Adjust Points / Credits">
-  <form onsubmit={(e) => { e.preventDefault(); handleEarn(); }} class="space-y-4">
+  <form novalidate onsubmit={(e) => { e.preventDefault(); handleEarn(); }} class="space-y-4">
     {#if earnError}
       <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{earnError}</div>
     {/if}

@@ -273,7 +273,7 @@
 
 <!-- Create Modal -->
 <Modal bind:open={showCreateModal} title="New Automatic Reward">
-  <form onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
     {#if createError}
       <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
     {/if}

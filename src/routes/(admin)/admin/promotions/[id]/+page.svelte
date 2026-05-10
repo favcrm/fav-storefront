@@ -249,7 +249,7 @@
                 bind:value={editCode}
                 oninput={(e) => { editCode = e.currentTarget.value.toUpperCase(); }}
                 placeholder="e.g. SUMMER25"
-                required
+                aria-required="true"
                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:ring-0 focus:bg-white focus:border-green-700 text-slate-900 font-medium font-mono uppercase transition-colors rounded-none"
               />
             </div>

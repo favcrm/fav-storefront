@@ -29,7 +29,8 @@
 			{name}
 			type="checkbox"
 			bind:checked
-			{required}
+			aria-required={required}
+			aria-invalid={error ? 'true' : undefined}
 			{disabled}
 			class={clsx(
 				'mt-0.5 h-5 w-5 rounded-none border-2 text-green-700 focus:ring-0 focus:ring-offset-0 transition-colors cursor-pointer',

@@ -278,7 +278,7 @@
 
 <!-- Create / Edit Modal -->
 <Modal bind:open={modalOpen} title={modalTitle}>
-  <form
+  <form novalidate
     onsubmit={(e) => { e.preventDefault(); handleSave(); }}
     class="space-y-4"
   >

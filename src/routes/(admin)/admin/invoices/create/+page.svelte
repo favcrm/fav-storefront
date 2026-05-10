@@ -193,7 +193,7 @@
     <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{error}</div>
   {/if}
 
-  <form onsubmit={(e) => { e.preventDefault(); handleCreate(); }}>
+  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }}>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Main content -->
       <div class="lg:col-span-2 space-y-4">

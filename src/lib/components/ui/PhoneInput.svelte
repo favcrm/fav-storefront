@@ -249,7 +249,8 @@
 				oninput={handleInput}
 				onblur={handleBlur}
 				placeholder={getExample(selectedCountry.iso)}
-				{required}
+				aria-required={required}
+				aria-invalid={error || (touched && isPhoneValid === false) ? 'true' : undefined}
 				{disabled}
 				class={clsx(
 					'w-full px-4 py-3 bg-slate-50 border focus:ring-0 focus:bg-white text-slate-900 font-medium transition-colors rounded-none',

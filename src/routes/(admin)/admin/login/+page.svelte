@@ -4,11 +4,17 @@
   import { adminLogin, isAdminAuthenticated } from "$lib/stores/admin-auth";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
+  import {
+    firstError,
+    validateEmail,
+    validateRequired,
+  } from "$lib/utils/form-validation";
   import { onMount } from "svelte";
 
   let email = $state("");
   let password = $state("");
   let error = $state("");
+  let fieldErrors = $state<Record<string, string>>({});
   let loading = $state(false);
 
   onMount(() => {
@@ -20,6 +26,19 @@
   async function handleSubmit(e: Event) {
     e.preventDefault();
     error = "";
+    fieldErrors = {};
+
+    const validation = firstError([
+      validateEmail(email),
+      validateRequired(password, "password", "Password"),
+    ]);
+
+    if (validation) {
+      fieldErrors = { [validation.field]: validation.message };
+      error = validation.message;
+      return;
+    }
+
     loading = true;
 
     try {
@@ -51,12 +70,13 @@
         </div>
       {/if}
 
-      <form onsubmit={handleSubmit} class="space-y-4">
+      <form novalidate onsubmit={handleSubmit} class="space-y-4">
         <Input
           label="Email"
           name="email"
           type="email"
           bind:value={email}
+          error={fieldErrors.email}
           required
         />
         <Input
@@ -64,6 +84,7 @@
           name="password"
           type="password"
           bind:value={password}
+          error={fieldErrors.password}
           required
         />
         <Button type="submit" variant="primary" class="w-full" disabled={loading}>

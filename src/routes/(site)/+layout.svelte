@@ -36,7 +36,7 @@
     <span>{data.tenant?.brandName ?? "FavCRM Storefront"}</span>
   </a>
 
-  <nav class:open={menuOpen} aria-label="Main navigation">
+  <nav class="site-nav" class:open={menuOpen} aria-label="Main navigation">
     {#each navItems as item}
       <a
         href={item.href}

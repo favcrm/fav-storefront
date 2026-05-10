@@ -307,7 +307,7 @@
 
 <!-- Create / Edit Modal -->
 <Modal bind:open={modalOpen} title={modalTitle}>
-  <form onsubmit={(e) => { e.preventDefault(); handleSave(); }} class="space-y-4">
+  <form novalidate onsubmit={(e) => { e.preventDefault(); handleSave(); }} class="space-y-4">
     {#if formError}
       <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{formError}</div>
     {/if}
