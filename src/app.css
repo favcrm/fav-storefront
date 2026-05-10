@@ -719,12 +719,12 @@ p {
   padding: 22px;
 }
 
-dl {
+.member-panel dl {
   display: grid;
   gap: 12px;
 }
 
-dl div {
+.member-panel dl div {
   display: flex;
   justify-content: space-between;
   gap: 18px;
@@ -732,11 +732,11 @@ dl div {
   padding-bottom: 10px;
 }
 
-dt {
+.member-panel dt {
   color: var(--muted);
 }
 
-dd {
+.member-panel dd {
   margin: 0;
   font-weight: 700;
 }
