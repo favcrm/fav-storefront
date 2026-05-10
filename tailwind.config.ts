@@ -6,6 +6,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        ink: {
+          DEFAULT: "var(--ink)",
+          soft: "var(--ink-soft)",
+        },
+        paper: "var(--paper)",
+        surface: "var(--surface)",
+        muted: "var(--muted)",
+        line: "var(--line)",
+        accent: {
+          DEFAULT: "var(--accent)",
+          ink: "var(--accent-ink)",
+          soft: "var(--accent-soft)",
+        },
         green: {
           50: "hsl(var(--color-primary-50) / <alpha-value>)",
           100: "hsl(var(--color-primary-100) / <alpha-value>)",
@@ -83,9 +96,16 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ["'Noto Serif TC'", "'Playfair Display'", "serif"],
-        sans: ["'Plus Jakarta Sans'", "sans-serif"],
-        mono: ["'JetBrains Mono'", "monospace"],
+        serif: ["'Fraunces'", "'Source Serif 4'", "Georgia", "serif"],
+        display: ["'Fraunces'", "'Source Serif 4'", "Georgia", "serif"],
+        sans: [
+          "'Inter Tight'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'Segoe UI'",
+          "sans-serif",
+        ],
+        mono: ["'JetBrains Mono'", "ui-monospace", "monospace"],
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1rem" }],

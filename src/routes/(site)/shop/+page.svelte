@@ -1,48 +1,49 @@
 <script lang="ts">
-  import { PackageSearch, Search } from "lucide-svelte";
-  import { formatMoney } from "$lib/format";
-  import { productHref, productImage, productPrice } from "$lib/product";
+  import { Search } from "lucide-svelte";
+  import PageHeader from "$lib/components/site/PageHeader.svelte";
+  import ProductCard from "$lib/components/site/ProductCard.svelte";
+  import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
 </script>
 
-<section class="page-shell">
-  <div class="section-heading">
-    <p class="eyebrow">Shop</p>
-    <h1>Catalog</h1>
-  </div>
+<PageHeader
+  eyebrow="Shop"
+  title="Catalog"
+  lead="Every product published in your FavCRM workspace, with live pricing and inventory."
+/>
 
+<section class="site-container site-section site-section--tight">
   <form class="toolbar" method="GET">
     <label>
-      <Search size={18} />
+      <Search size={16} strokeWidth={1.6} />
       <input name="q" placeholder="Search products" value={data.search ?? ""} />
     </label>
     <select name="category" aria-label="Category">
       <option value="">All categories</option>
       {#each data.categories as category}
-        <option value={category.slug} selected={data.category_slug === category.slug}>
+        <option
+          value={category.slug}
+          selected={data.category_slug === category.slug}
+        >
           {category.name}
         </option>
       {/each}
     </select>
-    <button class="text-button" type="submit">Filter</button>
+    <button class="btn-site btn-site--secondary" type="submit">Filter</button>
   </form>
 
-  <div class="product-grid">
-    {#each data.products as product}
-      {@const image = productImage(product)}
-      <a class="product-card" href={productHref(product)}>
-        {#if image}
-          <img src={image} alt={product.name} />
-        {:else}
-          <span class="image-fallback"><PackageSearch size={28} /></span>
-        {/if}
-        <strong>{product.name}</strong>
-        <span>{formatMoney(productPrice(product))}</span>
-      </a>
-    {:else}
-      <p class="empty-state">No matching products.</p>
-    {/each}
-  </div>
+  {#if data.products.length}
+    <div class="product-grid">
+      {#each data.products as product}
+        <ProductCard {product} />
+      {/each}
+    </div>
+  {:else}
+    <EmptyState
+      title="No matching products"
+      description="Try clearing the search or selecting a different category."
+    />
+  {/if}
 </section>

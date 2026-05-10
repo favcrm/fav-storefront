@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { Lock } from "lucide-svelte";
   import { goto } from "$app/navigation";
   import { createFavCRM } from "$lib/favcrm";
   import { login } from "$lib/stores/auth";
+  import Button from "$lib/components/site/Button.svelte";
+  import Field from "$lib/components/site/Field.svelte";
+  import Eyebrow from "$lib/components/site/Eyebrow.svelte";
 
   let phone = $state("");
   let otp = $state("");
@@ -46,27 +50,55 @@
 
 <section class="auth-shell">
   <form class="auth-panel" onsubmit={(event) => event.preventDefault()}>
-    <p class="eyebrow">Member access</p>
-    <h1>Sign in with OTP</h1>
-    <label>
-      Phone
-      <input bind:value={phone} autocomplete="tel" placeholder="+852 6000 0000" />
-    </label>
+    <span class="auth-mark"><Lock size={20} strokeWidth={1.6} /></span>
+    <div>
+      <Eyebrow>Member access</Eyebrow>
+      <h1>Sign in to your account</h1>
+    </div>
+    <p class="auth-sub">
+      {sent
+        ? `We sent a one-time code to ${phone}.`
+        : "Enter your phone number — we'll send you a one-time code."}
+    </p>
+
+    <Field
+      label="Phone"
+      name="phone"
+      type="tel"
+      autocomplete="tel"
+      placeholder="+852 6000 0000"
+      bind:value={phone}
+    />
+
     {#if sent}
-      <label>
-        One-time code
-        <input bind:value={otp} inputmode="numeric" autocomplete="one-time-code" />
-      </label>
+      <Field
+        label="One-time code"
+        name="otp"
+        autocomplete="one-time-code"
+        inputmode="numeric"
+        bind:value={otp}
+      />
     {/if}
+
     {#if error}<p class="form-error">{error}</p>{/if}
+
     {#if sent}
-      <button class="primary-link" type="button" disabled={loading} onclick={verifyOtp}>
-        Verify and continue
-      </button>
+      <Button onclick={verifyOtp} disabled={loading} size="lg">
+        {loading ? "Verifying..." : "Verify and continue"}
+      </Button>
+      <Button
+        variant="ghost"
+        onclick={() => {
+          sent = false;
+          otp = "";
+        }}
+      >
+        Use a different number
+      </Button>
     {:else}
-      <button class="primary-link" type="button" disabled={loading} onclick={sendOtp}>
-        Send OTP
-      </button>
+      <Button onclick={sendOtp} disabled={loading} size="lg">
+        {loading ? "Sending..." : "Send OTP"}
+      </Button>
     {/if}
   </form>
 </section>

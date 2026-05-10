@@ -1,26 +1,38 @@
 <script lang="ts">
   import { CalendarDays } from "lucide-svelte";
   import { formatMoney } from "$lib/format";
+  import PageHeader from "$lib/components/site/PageHeader.svelte";
+  import ListingCard from "$lib/components/site/ListingCard.svelte";
+  import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
 </script>
 
-<section class="page-shell">
-  <div class="section-heading">
-    <p class="eyebrow">Bookings</p>
-    <h1>Services</h1>
-  </div>
-  <div class="listing-grid">
-    {#each data.services as service}
-      <article class="listing-card">
-        <CalendarDays size={22} />
-        <h2>{service.name}</h2>
-        <p>{service.description ?? "Book this service through FavCRM."}</p>
-        <strong>{formatMoney(service.price)}</strong>
-      </article>
-    {:else}
-      <p class="empty-state">No services are published yet.</p>
-    {/each}
-  </div>
+<PageHeader
+  eyebrow="Bookings"
+  title="Services"
+  lead="Reserve a session with one of our specialists. Slots and resources are managed in FavCRM."
+/>
+
+<section class="site-container site-section site-section--tight">
+  {#if data.services.length}
+    <div class="listing-grid">
+      {#each data.services as service}
+        <ListingCard
+          icon={CalendarDays}
+          title={service.name}
+          description={service.description ??
+            "Book this service through your FavCRM workspace."}
+          price={formatMoney(service.price)}
+        />
+      {/each}
+    </div>
+  {:else}
+    <EmptyState
+      icon={CalendarDays}
+      title="No services published"
+      description="Add bookable services in your FavCRM workspace to list them here."
+    />
+  {/if}
 </section>

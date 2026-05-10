@@ -1,49 +1,62 @@
 <script lang="ts">
-  import { ShoppingBag } from "lucide-svelte";
+  import { ArrowLeft, PackageSearch, ShoppingBag } from "lucide-svelte";
   import { cart } from "$lib/stores/cart";
   import { formatMoney } from "$lib/format";
-  import { productHref, productImage, productPrice } from "$lib/product";
+  import { productImage, productPrice } from "$lib/product";
+  import Button from "$lib/components/site/Button.svelte";
+  import Eyebrow from "$lib/components/site/Eyebrow.svelte";
+  import ProductCard from "$lib/components/site/ProductCard.svelte";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
   let image = $derived(productImage(data.product));
 </script>
 
-<section class="detail-shell">
+<section class="site-container detail-shell">
   <div class="detail-media">
     {#if image}
       <img src={image} alt={data.product.name} />
+    {:else}
+      <span class="image-fallback">
+        <PackageSearch size={36} strokeWidth={1.3} />
+      </span>
     {/if}
   </div>
+
   <div class="detail-copy">
-    <p class="eyebrow">Product</p>
-    <h1>{data.product.name}</h1>
+    <Eyebrow>Product</Eyebrow>
+    <h1 class="site-h1">{data.product.name}</h1>
     <p class="price">{formatMoney(productPrice(data.product))}</p>
     {#if data.product.description}
       <div class="rich-text">{data.product.description}</div>
     {/if}
-    <button class="primary-link" type="button" onclick={() => cart.add(data.product)}>
-      <ShoppingBag size={18} />
-      Add to cart
-    </button>
+    <div class="button-row">
+      <Button onclick={() => cart.add(data.product)} size="lg">
+        <ShoppingBag size={16} strokeWidth={1.8} />
+        Add to cart
+      </Button>
+      <Button href="/shop" variant="ghost">
+        <ArrowLeft size={16} strokeWidth={1.8} />
+        Continue shopping
+      </Button>
+    </div>
   </div>
 </section>
 
 {#if data.related.length}
-  <section class="page-shell">
-    <div class="section-heading">
-      <p class="eyebrow">Related</p>
-      <h2>You may also like</h2>
-    </div>
-    <div class="product-grid">
-      {#each data.related as product}
-        {@const relatedImage = productImage(product)}
-        <a class="product-card" href={productHref(product)}>
-          {#if relatedImage}<img src={relatedImage} alt={product.name} />{/if}
-          <strong>{product.name}</strong>
-          <span>{formatMoney(productPrice(product))}</span>
-        </a>
-      {/each}
+  <section class="site-section site-section--bordered">
+    <div class="site-container">
+      <div class="section-heading">
+        <div>
+          <Eyebrow>Related</Eyebrow>
+          <h2 class="site-h2">You may also like</h2>
+        </div>
+      </div>
+      <div class="product-grid">
+        {#each data.related as product}
+          <ProductCard {product} />
+        {/each}
+      </div>
     </div>
   </section>
 {/if}

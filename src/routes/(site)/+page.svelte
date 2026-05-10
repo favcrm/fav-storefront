@@ -1,84 +1,144 @@
 <script lang="ts">
-  import { ArrowRight, CalendarDays, PackageSearch, Sparkles } from "lucide-svelte";
-  import { formatMoney } from "$lib/format";
-  import { productHref, productImage, productPrice } from "$lib/product";
+  import {
+    ArrowRight,
+    CalendarDays,
+    PackageSearch,
+    Sparkles,
+    UserRound,
+  } from "lucide-svelte";
+  import { productHref, productImage } from "$lib/product";
+  import Eyebrow from "$lib/components/site/Eyebrow.svelte";
+  import Button from "$lib/components/site/Button.svelte";
+  import ProductCard from "$lib/components/site/ProductCard.svelte";
+  import FeatureCard from "$lib/components/site/FeatureCard.svelte";
+  import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
+
+  const stripProducts = $derived(data.products.slice(0, 3));
+  const hasProducts = $derived(data.products.length > 0);
 </script>
 
-<section class="hero">
+<section class="site-container hero">
+  <svg
+    class="hero-decor"
+    viewBox="0 0 140 140"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g fill="currentColor">
+      {#each Array(12) as _, row}
+        {#each Array(12) as _, col}
+          <circle cx={6 + col * 12} cy={6 + row * 12} r="1" />
+        {/each}
+      {/each}
+    </g>
+    <line
+      x1="0"
+      y1="140"
+      x2="140"
+      y2="0"
+      stroke="currentColor"
+      stroke-width="1"
+    />
+  </svg>
+
   <div class="hero-copy">
-    <p class="eyebrow">Headless FavCRM storefront</p>
-    <h1>{data.tenant.brandName}</h1>
-    <p>
-      A commerce, booking, event, and member portal experience powered by the
-      FavCRM customer API.
+    <Eyebrow>Storefront template</Eyebrow>
+    <h1 class="site-h1 site-h1--display">{data.tenant.brandName}</h1>
+    <p class="site-lead">
+      A modern commerce, booking, and member experience — wired to the FavCRM
+      customer API and ready to make your own.
     </p>
     <div class="button-row">
-      <a class="primary-link" href="/shop">
-        Browse shop <ArrowRight size={18} />
-      </a>
-      <a class="secondary-link" href="/bookings">Book a service</a>
+      <Button href="/shop" size="lg">
+        Browse shop
+        <ArrowRight size={16} strokeWidth={1.8} />
+      </Button>
+      <Button href="/bookings" variant="secondary" size="lg">
+        Book a service
+      </Button>
     </div>
   </div>
 
-  <div class="product-strip" aria-label="Featured products">
-    {#each data.products.slice(0, 3) as product}
-      {@const image = productImage(product)}
-      <a class="feature-product" href={productHref(product)}>
-        {#if image}
-          <img src={image} alt={product.name} />
-        {:else}
-          <span class="image-fallback"><PackageSearch size={30} /></span>
-        {/if}
-        <span>{product.name}</span>
-      </a>
-    {:else}
-      <div class="empty-visual">
-        <Sparkles size={34} />
-        <span>Connect a FavCRM company to render live catalog assets.</span>
+  <div class="hero-media" aria-label="Featured products">
+    {#if hasProducts}
+      <div class="product-strip">
+        {#each stripProducts as product}
+          {@const image = productImage(product)}
+          <a class="product-strip-card" href={productHref(product)}>
+            {#if image}
+              <img src={image} alt={product.name} loading="lazy" />
+            {:else}
+              <span class="image-fallback">
+                <PackageSearch size={28} strokeWidth={1.4} />
+              </span>
+            {/if}
+            <span class="strip-label">
+              <span>{product.name}</span>
+              <ArrowRight size={14} strokeWidth={1.8} />
+            </span>
+          </a>
+        {/each}
       </div>
-    {/each}
+    {:else}
+      <EmptyState
+        icon={Sparkles}
+        title="Connect a workspace"
+        description="Configure VITE_FAVCRM_COMPANY_ID to render your live catalog."
+      />
+    {/if}
   </div>
 </section>
 
-<section class="feature-band">
-  <a href="/shop">
-    <PackageSearch size={22} />
-    <strong>Commerce</strong>
-    <span>Products, categories, cart, checkout, orders, and reviews.</span>
-  </a>
-  <a href="/bookings">
-    <CalendarDays size={22} />
-    <strong>Bookings</strong>
-    <span>Services, staff, resources, time slots, and member history.</span>
-  </a>
-  <a href="/member">
-    <Sparkles size={22} />
-    <strong>Membership</strong>
-    <span>OTP sign-in, profile, member card, invoices, and subscriptions.</span>
-  </a>
+<section class="feature-band site-container">
+  <FeatureCard
+    href="/shop"
+    icon={PackageSearch}
+    title="Commerce"
+    description="Products, categories, cart, checkout, orders, and reviews."
+  />
+  <FeatureCard
+    href="/bookings"
+    icon={CalendarDays}
+    title="Bookings"
+    description="Services, staff, resources, time slots, and member history."
+  />
+  <FeatureCard
+    href="/member"
+    icon={UserRound}
+    title="Membership"
+    description="OTP sign-in, profile, member card, invoices, and subscriptions."
+  />
 </section>
 
-<section class="section-heading">
-  <p class="eyebrow">Live catalog</p>
-  <h2>Featured Products</h2>
-</section>
-
-<div class="product-grid">
-  {#each data.products as product}
-    {@const image = productImage(product)}
-    <a class="product-card" href={productHref(product)}>
-      {#if image}
-        <img src={image} alt={product.name} />
-      {:else}
-        <span class="image-fallback"><PackageSearch size={28} /></span>
+<section class="site-section">
+  <div class="site-container">
+    <div class="section-heading">
+      <div>
+        <Eyebrow>Live catalog</Eyebrow>
+        <h2 class="site-h2">Featured</h2>
+      </div>
+      {#if hasProducts}
+        <a class="section-heading-link" href="/shop">
+          View all
+          <ArrowRight size={14} strokeWidth={1.8} />
+        </a>
       {/if}
-      <strong>{product.name}</strong>
-      <span>{formatMoney(productPrice(product))}</span>
-    </a>
-  {:else}
-    <p class="empty-state">No products are published yet.</p>
-  {/each}
-</div>
+    </div>
+
+    {#if hasProducts}
+      <div class="product-grid">
+        {#each data.products as product}
+          <ProductCard {product} />
+        {/each}
+      </div>
+    {:else}
+      <EmptyState
+        title="No products published"
+        description="Add products in your FavCRM workspace to see them appear here."
+      />
+    {/if}
+  </div>
+</section>
