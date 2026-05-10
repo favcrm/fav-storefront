@@ -90,14 +90,7 @@
 
 <!-- Sidebar -->
 <aside
-  class="
-    fixed lg:relative top-0 left-0 z-50 lg:z-auto
-    w-60 bg-slate-900 text-white
-    h-screen lg:h-full
-    transform transition-transform duration-300 ease-out
-    flex-shrink-0
-    {isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-  "
+  class="admin-sidebar {isOpen ? 'is-open' : ''}"
 >
   <div class="flex flex-col h-full">
     <!-- Header -->
@@ -113,7 +106,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex-1 p-3 overflow-y-auto space-y-4">
+    <nav class="flex-1 p-3 space-y-4">
       {#each navGroups as group}
         <div>
           {#if group.label}
@@ -154,3 +147,32 @@
     </div>
   </div>
 </aside>
+
+<style>
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: 240px;
+    height: 100vh;
+    background: rgb(15 23 42);
+    color: white;
+    flex-shrink: 0;
+    transform: translateX(-100%);
+    transition: transform 240ms ease-out;
+  }
+  .admin-sidebar.is-open {
+    transform: translateX(0);
+  }
+  @media (min-width: 1024px) {
+    .admin-sidebar {
+      position: sticky;
+      top: 52px;
+      z-index: auto;
+      height: calc(100vh - 52px);
+      transform: none;
+      align-self: flex-start;
+    }
+  }
+</style>

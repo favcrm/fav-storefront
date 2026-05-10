@@ -9,6 +9,7 @@
   } from "lucide-svelte";
   import { page } from "$app/stores";
   import { authStore } from "$lib/stores/auth";
+  import { cartCount } from "$lib/stores/cart";
   import IconMark from "./IconMark.svelte";
 
   let {
@@ -56,8 +57,13 @@
     </nav>
 
     <div class="header-actions">
-      <a class="icon-button" href="/shop" aria-label="Shop">
+      <a class="icon-button cart-button" href="/cart" aria-label="Cart">
         <ShoppingBag size={18} strokeWidth={1.6} />
+        {#if $cartCount > 0}
+          <span class="cart-badge" aria-label="{$cartCount} items in cart">
+            {$cartCount}
+          </span>
+        {/if}
       </a>
       <a
         class="icon-button desktop-only"
@@ -92,3 +98,25 @@
     </div>
   </div>
 </header>
+
+<style>
+  .cart-button {
+    position: relative;
+  }
+  .cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--accent, #1e3a8a);
+    color: var(--accent-ink, #fff);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 16px;
+    text-align: center;
+    box-shadow: 0 0 0 2px var(--paper, #fafaf7);
+  }
+</style>

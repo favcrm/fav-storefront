@@ -3,12 +3,10 @@ import type { Product, ProductListItem } from "@favcrm/sdk";
 export type StorefrontProduct = Product | ProductListItem;
 
 export function productImage(product: StorefrontProduct): string | null {
-  if ("image" in product) return product.image;
-  return (
-    product.images.find((image) => image.isPrimary)?.src ??
-    product.images[0]?.src ??
-    null
-  );
+  if ("image" in product) return product.image ?? null;
+  const images = (product as Product).images;
+  if (!Array.isArray(images) || images.length === 0) return null;
+  return images.find((image) => image.isPrimary)?.src ?? images[0]?.src ?? null;
 }
 
 export function productPrice(product: StorefrontProduct): number | null {

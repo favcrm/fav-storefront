@@ -56,9 +56,13 @@ interface ProductSeed {
   sku: string;
   stockQuantity: number;
   categoryName: string;
+  imageUrl: string;
   discountPrice?: string;
   isFeatured?: boolean;
 }
+
+const UNSPLASH = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=1200&q=75&auto=format&fit=crop`;
 
 const PRODUCTS: ProductSeed[] = [
   {
@@ -70,6 +74,7 @@ const PRODUCTS: ProductSeed[] = [
     stockQuantity: 25,
     isFeatured: true,
     categoryName: "Accessories",
+    imageUrl: UNSPLASH("1544816155-12df9643f363"),
   },
   {
     name: "Atelier Apron",
@@ -80,6 +85,7 @@ const PRODUCTS: ProductSeed[] = [
     stockQuantity: 40,
     isFeatured: true,
     categoryName: "Apparel",
+    imageUrl: UNSPLASH("1556905055-8f358a7a47b2"),
   },
   {
     name: "Daily Tee",
@@ -89,6 +95,7 @@ const PRODUCTS: ProductSeed[] = [
     sku: "TEE-01",
     stockQuantity: 120,
     categoryName: "Apparel",
+    imageUrl: UNSPLASH("1521572163474-6864f9cf17ab"),
   },
   {
     name: "Field Cap",
@@ -98,6 +105,7 @@ const PRODUCTS: ProductSeed[] = [
     sku: "CAP-01",
     stockQuantity: 60,
     categoryName: "Accessories",
+    imageUrl: UNSPLASH("1521369909029-2afed882baee"),
   },
   {
     name: "Linen Throw",
@@ -109,6 +117,7 @@ const PRODUCTS: ProductSeed[] = [
     stockQuantity: 18,
     isFeatured: true,
     categoryName: "Home",
+    imageUrl: UNSPLASH("1522771739844-6a9f6d5f14af"),
   },
   {
     name: "Stoneware Mug",
@@ -118,6 +127,7 @@ const PRODUCTS: ProductSeed[] = [
     sku: "MUG-01",
     stockQuantity: 80,
     categoryName: "Home",
+    imageUrl: UNSPLASH("1514228742587-6b1558fcca3d"),
   },
 ];
 
@@ -207,6 +217,7 @@ function buildEvents() {
       visibility: "public" as const,
       deliveryMode: "in_person" as const,
       maxTicketsPerOrder: 4,
+      imageUrl: UNSPLASH("1469334031218-e382a71b716b"),
       sessions: [
         {
           startTime: isoOffset(14, 18),
@@ -229,6 +240,7 @@ function buildEvents() {
       maxTicketsPerOrder: 2,
       accessRevealPolicy: "before_start" as const,
       accessRevealMinutesBeforeStart: 30,
+      imageUrl: UNSPLASH("1558618666-fcd25c85cd64"),
       sessions: [
         {
           startTime: isoOffset(7, 19),
@@ -249,6 +261,7 @@ function buildEvents() {
       visibility: "public" as const,
       deliveryMode: "in_person" as const,
       maxTicketsPerOrder: 2,
+      imageUrl: UNSPLASH("1606312619070-d48b4c652a52"),
       sessions: [
         {
           startTime: isoOffset(21, 14),

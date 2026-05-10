@@ -1,6 +1,7 @@
 <script lang="ts">
   import SiteHeader from "$lib/components/site/SiteHeader.svelte";
   import SiteFooter from "$lib/components/site/SiteFooter.svelte";
+  import ToastViewport from "$lib/components/site/ToastViewport.svelte";
   import type { Snippet } from "svelte";
   import type { LayoutData } from "./$types";
 
@@ -24,4 +25,5 @@
     {@render children()}
   </main>
   <SiteFooter {brandName} />
+  <ToastViewport />
 </div>
