@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family:
     "Avenir Next", "Gill Sans", "Trebuchet MS", system-ui, sans-serif;
@@ -12,6 +16,73 @@
   --accent-dark: #064e48;
   --copper: #b76135;
   --shadow: 0 18px 50px rgb(38 31 22 / 12%);
+
+  --color-primary-50: 152 50% 97%;
+  --color-primary-100: 152 45% 90%;
+  --color-primary-200: 152 40% 80%;
+  --color-primary-300: 152 38% 65%;
+  --color-primary-400: 152 40% 50%;
+  --color-primary-500: 152 45% 40%;
+  --color-primary-600: 152 45% 32%;
+  --color-primary-700: 152 48% 25%;
+  --color-primary-800: 152 50% 18%;
+  --color-primary-900: 152 55% 12%;
+  --color-primary-950: 152 60% 7%;
+  --color-primary: var(--color-primary-600);
+  --color-primary-hover: var(--color-primary-700);
+  --color-primary-light: var(--color-primary-50);
+  --color-slate-50: 210 40% 98%;
+  --color-slate-100: 210 30% 96%;
+  --color-slate-200: 210 20% 92%;
+  --color-slate-300: 210 15% 88%;
+  --color-slate-400: 210 12% 75%;
+  --color-slate-500: 210 10% 60%;
+  --color-slate-600: 210 12% 50%;
+  --color-slate-700: 210 15% 35%;
+  --color-slate-800: 210 20% 20%;
+  --color-slate-900: 210 25% 10%;
+  --color-success-50: 142 76% 97%;
+  --color-success-100: 142 76% 90%;
+  --color-success-200: 142 69% 80%;
+  --color-success-500: 142 76% 46%;
+  --color-success-600: 142 76% 36%;
+  --color-success-700: 142 72% 29%;
+  --color-success: var(--color-success-600);
+  --color-warning-50: 48 96% 95%;
+  --color-warning-100: 48 96% 88%;
+  --color-warning-200: 48 94% 78%;
+  --color-warning-500: 38 92% 50%;
+  --color-warning-600: 32 95% 44%;
+  --color-warning-700: 26 90% 37%;
+  --color-warning: var(--color-warning-500);
+  --color-error-50: 0 86% 97%;
+  --color-error-100: 0 93% 94%;
+  --color-error-200: 0 96% 89%;
+  --color-error-500: 0 84% 60%;
+  --color-error-600: 0 72% 51%;
+  --color-error-700: 0 74% 42%;
+  --color-error: var(--color-error-600);
+  --color-danger: var(--color-error);
+  --color-info-50: 204 100% 97%;
+  --color-info-100: 204 94% 90%;
+  --color-info-200: 201 94% 82%;
+  --color-info-500: 199 89% 52%;
+  --color-info-600: 199 89% 48%;
+  --color-info-700: 200 88% 40%;
+  --color-info: var(--color-info-600);
+  --color-accent: 239 84% 67%;
+  --color-accent-hover: 239 84% 57%;
+  --color-accent-light: 239 84% 97%;
+  --status-available: var(--color-success);
+  --status-booked: 210 10% 58%;
+  --status-pending: var(--color-warning);
+  --status-confirmed: var(--color-success);
+  --status-cancelled: var(--color-error);
+  --status-full: var(--color-error);
+  --ease-out-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration-fast: 0.2s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.5s;
 }
 
 * {
@@ -899,6 +970,198 @@ dd {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 8px;
+}
+
+.card {
+  overflow: hidden;
+  border: 1px solid hsl(var(--color-slate-200));
+  border-radius: 0.625rem;
+  background: white;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 4%),
+    0 2px 4px rgb(0 0 0 / 2%);
+}
+
+.card-header,
+.card-body,
+.card-footer {
+  padding: 1.25rem;
+}
+
+.card-header {
+  border-bottom: 1px solid hsl(var(--color-slate-200));
+}
+
+.card-footer {
+  border-top: 1px solid hsl(var(--color-slate-200));
+  background: hsl(var(--color-slate-50));
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-ghost,
+.btn-danger,
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  border: 0;
+  color: white;
+  background: hsl(var(--color-primary));
+}
+
+.btn-primary:hover {
+  background: hsl(var(--color-primary-hover));
+}
+
+.btn-secondary {
+  border: 1px solid hsl(var(--color-slate-200));
+  color: hsl(var(--color-slate-700));
+  background: hsl(var(--color-slate-100));
+}
+
+.btn-outline {
+  border: 1px solid hsl(var(--color-primary));
+  color: hsl(var(--color-primary));
+  background: transparent;
+}
+
+.btn-ghost {
+  border: 0;
+  color: hsl(var(--color-slate-600));
+  background: transparent;
+}
+
+.btn-danger {
+  border: 0;
+  color: white;
+  background: hsl(var(--color-danger));
+}
+
+.btn-accent {
+  border: 0;
+  color: white;
+  background: hsl(var(--color-accent));
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-outline:disabled,
+.btn-ghost:disabled,
+.btn-danger:disabled,
+.btn-accent:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  border: 1px solid hsl(var(--color-slate-300));
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: white;
+  font-size: 0.9375rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: hsl(var(--color-primary));
+  box-shadow: 0 0 0 3px hsl(var(--color-primary) / 10%);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: hsl(var(--color-slate-700));
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-hint,
+.form-error {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.form-hint {
+  color: hsl(var(--color-slate-500));
+}
+
+.form-error {
+  color: hsl(var(--color-danger));
+}
+
+.empty-state {
+  padding: 3rem 2rem;
+  color: hsl(var(--color-slate-500));
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  color: hsl(var(--color-slate-400));
+  opacity: 0.4;
+}
+
+.empty-state-title {
+  margin: 0.5rem 0 0.25rem;
+  color: hsl(var(--color-slate-700));
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid hsl(var(--color-slate-100));
+  text-align: left;
+}
+
+.data-table th {
+  color: hsl(var(--color-slate-500));
+  background: hsl(var(--color-slate-50));
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 @media (max-width: 820px) {

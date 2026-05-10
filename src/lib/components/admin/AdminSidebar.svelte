@@ -1,15 +1,16 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import {
-    CalendarDays,
-    Gift,
     LayoutDashboard,
-    Megaphone,
-    Package,
-    Settings,
     ShoppingBag,
+    Package,
     Tag,
     Users,
+    Crown,
+    Ticket,
+    Gift,
+    Megaphone,
+    Settings,
     X,
   } from "lucide-svelte";
 
@@ -20,27 +21,23 @@
 
   let { isOpen, onClose }: Props = $props();
 
-  interface AdminNavItem {
+  interface NavItem {
     href: string;
     label: string;
-    icon: typeof LayoutDashboard;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    icon: any;
     exact?: boolean;
   }
 
-  interface AdminNavGroup {
+  interface NavGroup {
     label?: string;
-    items: AdminNavItem[];
+    items: NavItem[];
   }
 
-  const navGroups: AdminNavGroup[] = [
+  const navGroups: NavGroup[] = [
     {
       items: [
-        {
-          href: "/admin",
-          label: "Dashboard",
-          icon: LayoutDashboard,
-          exact: true,
-        },
+        { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
       ],
     },
     {
@@ -52,21 +49,24 @@
       ],
     },
     {
-      label: "Operations",
+      label: "People",
       items: [
-        { href: "/admin/bookings", label: "Bookings", icon: CalendarDays },
         { href: "/admin/customers", label: "Customers", icon: Users },
+        { href: "/admin/membership-tiers", label: "Membership", icon: Crown },
       ],
     },
     {
       label: "Marketing",
       items: [
-        { href: "/admin/promotions", label: "Promotions", icon: Gift },
+        { href: "/admin/promotions", label: "Promotions", icon: Ticket },
+        { href: "/admin/rewards", label: "Rewards", icon: Gift },
         { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
       ],
     },
     {
-      items: [{ href: "/admin/settings", label: "Settings", icon: Settings }],
+      items: [
+        { href: "/admin/settings", label: "Settings", icon: Settings },
+      ],
     },
   ];
 
@@ -76,49 +76,81 @@
   }
 </script>
 
+<!-- Mobile Overlay -->
 {#if isOpen}
-  <button
-    class="admin-sidebar-overlay"
-    type="button"
-    aria-label="Close menu"
+  <div
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
     onclick={onClose}
-  ></button>
+    onkeydown={(e) => e.key === "Escape" && onClose()}
+    role="button"
+    tabindex="0"
+    aria-label="Close menu"
+  ></div>
 {/if}
 
-<aside class="admin-sidebar" class:open={isOpen}>
-  <div class="admin-sidebar-header">
-    <span>Admin</span>
-    <button
-      class="admin-close-button"
-      type="button"
-      aria-label="Close menu"
-      onclick={onClose}
-    >
-      <X size={20} />
-    </button>
-  </div>
+<!-- Sidebar -->
+<aside
+  class="
+    fixed lg:relative top-0 left-0 z-50 lg:z-auto
+    w-60 bg-slate-900 text-white
+    h-screen lg:h-full
+    transform transition-transform duration-300 ease-out
+    flex-shrink-0
+    {isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+  "
+>
+  <div class="flex flex-col h-full">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-slate-800">
+      <span class="font-semibold text-sm text-white tracking-wide">Admin</span>
+      <button
+        onclick={onClose}
+        class="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+        aria-label="Close menu"
+      >
+        <X class="w-5 h-5" />
+      </button>
+    </div>
 
-  <nav class="admin-sidebar-nav" aria-label="Admin navigation">
-    {#each navGroups as group}
-      <div class="admin-nav-group">
-        {#if group.label}
-          <p>{group.label}</p>
-        {/if}
-        {#each group.items as item}
-          <a
-            href={item.href}
-            class:active={isActiveRoute(item.href, item.exact)}
-            onclick={onClose}
-          >
-            <item.icon size={16} />
-            <span>{item.label}</span>
-          </a>
-        {/each}
-      </div>
-    {/each}
-  </nav>
+    <!-- Navigation -->
+    <nav class="flex-1 p-3 overflow-y-auto space-y-4">
+      {#each navGroups as group}
+        <div>
+          {#if group.label}
+            <p class="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+              {group.label}
+            </p>
+          {/if}
+          <div class="space-y-0.5">
+            {#each group.items as item (item.href)}
+              <a
+                href={item.href}
+                onclick={onClose}
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200"
+                class:bg-slate-800={isActiveRoute(item.href, item.exact)}
+                class:text-white={isActiveRoute(item.href, item.exact)}
+                class:font-medium={isActiveRoute(item.href, item.exact)}
+                class:text-slate-400={!isActiveRoute(item.href, item.exact)}
+                class:hover:text-white={!isActiveRoute(item.href, item.exact)}
+                class:hover:bg-slate-800={!isActiveRoute(item.href, item.exact)}
+              >
+                <item.icon class="w-4 h-4 shrink-0" />
+                <span>{item.label}</span>
+              </a>
+            {/each}
+          </div>
+        </div>
+      {/each}
+    </nav>
 
-  <div class="admin-sidebar-footer">
-    <a href="/">Back to site</a>
+    <!-- Back to site -->
+    <div class="p-3 border-t border-slate-800">
+      <a
+        href="/"
+        class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-500 hover:text-slate-300 transition-colors"
+      >
+        &larr; Back to site
+      </a>
+    </div>
   </div>
 </aside>

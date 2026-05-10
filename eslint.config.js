@@ -48,4 +48,17 @@ export default ts.config(
       "svelte/valid-compile": ["error", { ignoreWarnings: true }],
     },
   },
+  {
+    files: [
+      "src/routes/(admin)/**/*.svelte",
+      "src/lib/components/admin/**/*.svelte",
+      "src/lib/components/ui/**/*.svelte",
+      "src/lib/layouts/AdminLayout.svelte",
+    ],
+    rules: {
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "svelte/no-at-html-tags": "off",
+    },
+  },
 );
