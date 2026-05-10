@@ -437,7 +437,7 @@ dd {
 }
 
 .admin-app-shell {
-  min-height: calc(100vh - 74px);
+  min-height: 100vh;
   color: #111827;
   background: #f9fafb;
 }
@@ -506,7 +506,7 @@ dd {
 
 .admin-main-frame {
   display: flex;
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 58px);
 }
 
 .admin-sidebar {
@@ -515,7 +515,7 @@ dd {
   display: flex;
   flex: 0 0 240px;
   flex-direction: column;
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 58px);
   color: white;
   background: #0f172a;
 }
@@ -929,14 +929,14 @@ dd {
   }
 
   .admin-main-frame {
-    min-height: calc(100vh - 132px);
+    min-height: calc(100vh - 58px);
   }
 
   .admin-sidebar {
     position: fixed;
-    top: 74px;
+    top: 0;
     left: 0;
-    height: calc(100vh - 74px);
+    height: 100vh;
     min-height: 0;
     transform: translateX(-100%);
     transition: transform 220ms ease;
@@ -948,7 +948,7 @@ dd {
 
   .admin-sidebar-overlay {
     position: fixed;
-    inset: 74px 0 0;
+    inset: 0;
     z-index: 20;
     border: 0;
     background: rgb(15 23 42 / 52%);
