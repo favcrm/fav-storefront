@@ -23,28 +23,28 @@
     {
       label: "Products",
       value: data.products.length,
-      href: "https://app.favcrm.io/products",
+      href: "/admin/products",
       icon: Package,
       tone: "emerald",
     },
     {
       label: "Categories",
       value: data.categories.length,
-      href: "https://app.favcrm.io/categories",
+      href: "/admin/categories",
       icon: ShoppingBag,
       tone: "sky",
     },
     {
       label: "Services",
       value: data.services.length,
-      href: "https://app.favcrm.io/bookings",
+      href: "/admin/bookings",
       icon: CalendarDays,
       tone: "amber",
     },
     {
       label: "Events",
       value: data.events.length,
-      href: "https://app.favcrm.io/events",
+      href: "/admin/events",
       icon: Users,
       tone: "violet",
     },
@@ -90,7 +90,7 @@
           <h1>Dashboard</h1>
           <p>Live storefront readiness from the FavCRM customer portal API.</p>
         </div>
-        <a class="admin-primary-action" href={portalUrl} target="_blank" rel="noreferrer">
+        <a class="admin-primary-action" href="/admin/settings">
           Customer portal settings
           <ArrowUpRight size={16} />
         </a>
@@ -98,7 +98,7 @@
 
       <div class="admin-metric-grid">
         {#each metrics as metric}
-          <a class="admin-metric-card" data-tone={metric.tone} href={metric.href} target="_blank" rel="noreferrer">
+          <a class="admin-metric-card" data-tone={metric.tone} href={metric.href}>
             <div>
               <span class="admin-metric-icon">
                 <metric.icon size={18} />
@@ -115,7 +115,7 @@
         <section class="admin-panel admin-wide-panel">
           <div class="admin-panel-header">
             <h2>Catalog Preview</h2>
-            <a href="https://app.favcrm.io/products" target="_blank" rel="noreferrer">Manage</a>
+            <a href="/admin/products">Manage</a>
           </div>
           {#if data.products.length}
             <div class="admin-table-wrap">
@@ -174,12 +174,12 @@
         <section class="admin-panel">
           <div class="admin-panel-header">
             <h2>Content</h2>
-            <a href="https://app.favcrm.io/blog" target="_blank" rel="noreferrer">Manage</a>
+            <a href="/admin/blog">Manage</a>
           </div>
           <div class="admin-content-list">
             {#if data.posts.length}
               {#each data.posts as post}
-                <a href="https://app.favcrm.io/blog" target="_blank" rel="noreferrer">
+                <a href="/admin/blog">
                   <FileText size={16} />
                   <span>{post.title}</span>
                 </a>

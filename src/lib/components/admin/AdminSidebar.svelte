@@ -46,29 +46,27 @@
     {
       label: "Commerce",
       items: [
-        { href: "https://app.favcrm.io/orders", label: "Orders", icon: ShoppingBag },
-        { href: "https://app.favcrm.io/products", label: "Products", icon: Package },
-        { href: "https://app.favcrm.io/categories", label: "Categories", icon: Tag },
+        { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+        { href: "/admin/products", label: "Products", icon: Package },
+        { href: "/admin/categories", label: "Categories", icon: Tag },
       ],
     },
     {
       label: "Operations",
       items: [
-        { href: "https://app.favcrm.io/bookings", label: "Bookings", icon: CalendarDays },
-        { href: "https://app.favcrm.io/customers", label: "Customers", icon: Users },
+        { href: "/admin/bookings", label: "Bookings", icon: CalendarDays },
+        { href: "/admin/customers", label: "Customers", icon: Users },
       ],
     },
     {
       label: "Marketing",
       items: [
-        { href: "https://app.favcrm.io/promotions", label: "Promotions", icon: Gift },
-        { href: "https://app.favcrm.io/announcements", label: "Announcements", icon: Megaphone },
+        { href: "/admin/promotions", label: "Promotions", icon: Gift },
+        { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
       ],
     },
     {
-      items: [
-        { href: "https://app.favcrm.io/settings/customer-portal", label: "Settings", icon: Settings },
-      ],
+      items: [{ href: "/admin/settings", label: "Settings", icon: Settings }],
     },
   ];
 
@@ -110,8 +108,6 @@
           <a
             href={item.href}
             class:active={isActiveRoute(item.href, item.exact)}
-            target={item.href.startsWith("https://") ? "_blank" : undefined}
-            rel={item.href.startsWith("https://") ? "noreferrer" : undefined}
             onclick={onClose}
           >
             <item.icon size={16} />
