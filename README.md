@@ -1,5 +1,7 @@
 # FavCRM Storefront Template
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront&project-name=favcrm-storefront&repository-name=favcrm-storefront&env=VITE_FAVCRM_API_URL,VITE_FAVCRM_COMPANY_ID,VITE_SITE_URL&envDescription=FavCRM%20storefront%20configuration%20from%20app.favcrm.io&envLink=https%3A%2F%2Fgithub.com%2Ffavcrm%2Ffav-storefront%23deployment-on-vercel)
+
 A SvelteKit storefront template for using FavCRM as a headless customer service.
 It is based on the production shape of the StayInTouch storefront, generalized
 for new merchants and configured for Vercel by default.
@@ -130,9 +132,23 @@ that helper yet.
 
 ## Deployment on Vercel
 
-Add the same environment variables in Vercel Project Settings, then deploy from
-GitHub. The template uses `@sveltejs/adapter-vercel`; no Cloudflare Worker or
-Wrangler configuration is required.
+Use the **Deploy with Vercel** button above, or import
+`github.com/favcrm/fav-storefront` from the Vercel dashboard.
+
+The deploy flow should prompt for:
+
+| Variable                 | Value                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `VITE_FAVCRM_API_URL`    | Use `https://api.favcrm.io` for hosted FavCRM.                                                      |
+| `VITE_FAVCRM_COMPANY_ID` | Copy this from the workspace or customer portal settings in [app.favcrm.io](https://app.favcrm.io). |
+| `VITE_SITE_URL`          | Use the production storefront URL. Update this after Vercel assigns or connects the final domain.   |
+
+Set the variables for Production and Preview environments. After changing
+environment variables in Vercel, redeploy so the new values are included in the
+build.
+
+The template uses `@sveltejs/adapter-vercel`; no Cloudflare Worker or Wrangler
+configuration is required.
 
 ## Quality Gates
 
