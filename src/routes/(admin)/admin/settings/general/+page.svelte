@@ -4,7 +4,7 @@
   import { Settings, Loader2, Save, CheckCircle2, ShieldAlert, Key } from 'lucide-svelte';
 
   let bookingConfig = $state<BookingConfig>({ allowMemberCancellation: true, memberCancellationCutoffHours: null });
-  let loginChannel = $state<LoginChannelConfig>({ channel: 'whatsapp' });
+  let loginChannel = $state<LoginChannelConfig>({ channel: 'email' });
   let loading = $state(true);
   let saving = $state(false);
   let error = $state('');
@@ -13,7 +13,7 @@
   // Form fields
   let allowMemberCancellation = $state(true);
   let cutoffHours = $state<string>('');
-  let channel = $state<'whatsapp' | 'sms' | 'email'>('whatsapp');
+  let channel = $state<'whatsapp' | 'sms' | 'email'>('email');
 
   onMount(async () => {
     try {
@@ -27,7 +27,7 @@
       cutoffHours = bookingConfig.memberCancellationCutoffHours?.toString() ?? '';
       
       loginChannel = loginRes;
-      channel = loginChannel.channel ?? 'whatsapp';
+      channel = loginChannel.channel ?? 'email';
     } catch {
       error = 'Failed to load settings';
     } finally {
@@ -99,8 +99,8 @@
             bind:value={channel}
             class="w-full bg-gray-50 border border-gray-200 rounded-lg px-3.5 py-2.5 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-800/20 focus:border-slate-400 transition-all"
           >
-            <option value="whatsapp">WhatsApp OTP</option>
-            <option value="sms">SMS OTP</option>
+            <option value="whatsapp" disabled>WhatsApp OTP</option>
+            <option value="sms" disabled>SMS OTP</option>
             <option value="email">Email OTP</option>
           </select>
         </div>

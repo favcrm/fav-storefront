@@ -13,7 +13,7 @@
   let sent = $state(false);
   let loading = $state(false);
   let error = $state("");
-  let channel = $state<"whatsapp" | "sms" | "email">("whatsapp");
+  let channel = $state<"whatsapp" | "sms" | "email">("email");
 
   const sdk = createFavCRM();
 
