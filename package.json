@@ -16,7 +16,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@favcrm/sdk": "file:../../v2/favcrm-sdk",
+    "@favcrm/sdk": "^1.2.0",
     "@stripe/stripe-js": "^9.4.0",
     "@sveltejs/adapter-vercel": "^5.10.2",
     "@sveltejs/kit": "^2.0.0",
