@@ -65,7 +65,7 @@
     align-items: center;
     gap: 10px;
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     padding: 10px 12px 10px 14px;
     border-radius: 8px;
     font-size: 13px;

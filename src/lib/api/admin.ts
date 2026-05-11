@@ -881,11 +881,13 @@ export const adminEventsApi = {
   list: (params?: ListParams) =>
     listResource<any>("/v6/merchant/events", params),
 
-  get: (id: string) =>
-    adminApiRequest<any>(`/v6/merchant/events/${id}`),
-    
+  get: (id: string) => adminApiRequest<any>(`/v6/merchant/events/${id}`),
+
   listRegistrations: (eventId: string, params?: ListParams) =>
-    listResource<AdminEventRegistration>(`/v6/merchant/events/${eventId}/registrations`, params),
+    listResource<AdminEventRegistration>(
+      `/v6/merchant/events/${eventId}/registrations`,
+      params,
+    ),
 };
 
 export interface AnalyticsConfig {
@@ -972,3 +974,46 @@ export interface LoginChannelConfig {
   smsBalance?: number;
   smsBalanceLow?: boolean;
 }
+
+// --- CMS/BLOG API ---
+export const adminBlogApi = {
+  list: (params?: ListParams) =>
+    listResource<import("$lib/types/admin").BlogPostAdmin>(
+      "/v6/merchant/cms/posts",
+      params,
+    ),
+
+  get: (id: string) =>
+    adminApiRequest<import("$lib/types/admin").BlogPostDetailAdmin>(
+      `/v6/merchant/cms/posts/${id}`,
+    ),
+
+  create: (data: import("$lib/types/admin").CreateBlogPostInput) =>
+    adminApiRequest<{ id: string; slug: string }>("/v6/merchant/cms/posts", {
+      method: "POST",
+      body: { ...data, type: data.type || "blog_post" },
+    }),
+
+  update: (id: string, data: import("$lib/types/admin").UpdateBlogPostInput) =>
+    adminApiRequest<{ id: string }>(`/v6/merchant/cms/posts/${id}`, {
+      method: "PATCH",
+      body: data,
+    }),
+
+  delete: (id: string) =>
+    adminApiRequest<{ success: boolean }>(`/v6/merchant/cms/posts/${id}`, {
+      method: "DELETE",
+    }),
+
+  uploadImage: async (id: string, file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    return adminApiRequest<{ featuredImage: string }>(
+      `/v6/merchant/cms/posts/${id}/upload-image`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+  },
+};

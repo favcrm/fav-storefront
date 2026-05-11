@@ -165,7 +165,7 @@
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-card, 10px);
     overflow: hidden;
-    background: #f1efe9;
+    background: #f3f4f6;
   }
   .service-detail-media img {
     width: 100%;
@@ -196,8 +196,8 @@
     flex-wrap: wrap;
     gap: 16px;
     padding: 14px 0;
-    border-top: 1px solid var(--line, #e6e4de);
-    border-bottom: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
+    border-bottom: 1px solid var(--line, #e5e7eb);
     font-size: 13px;
     color: var(--ink-soft, #2a2a2a);
   }
@@ -227,7 +227,7 @@
     margin-top: 8px;
     padding: 18px 20px;
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
   }
   .addon-preview ul {

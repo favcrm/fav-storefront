@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { CalendarDays, MapPin, Ticket, AlertCircle, Loader2 } from "lucide-svelte";
+  import { CalendarDays, MapPin, AlertCircle, Loader2, ArrowRight, CheckCircle2 } from "lucide-svelte";
   import type { PageData } from "./$types";
-  import { formatEventDate, formatEventPrice, getDeliveryModeLabel, stripHtml } from "@favcrm/sdk";
+  import { formatEventDate, formatEventPrice, getDeliveryModeLabel } from "@favcrm/sdk";
   import { authStore } from "$lib/stores/auth";
   import { createFavCRM } from "$lib/favcrm";
-  import { invalidateAll } from "$app/navigation";
+  import Button from "$lib/components/site/Button.svelte";
   
   let { data }: { data: PageData } = $props();
   const event = $derived(data.event as any);
@@ -14,7 +14,6 @@
   const deliveryLabel = $derived(getDeliveryModeLabel(event.deliveryMode));
   
   // Registration Form State
-  let showRegistration = $state(false);
   let submitting = $state(false);
   let regError = $state("");
   let successResult = $state<any>(null);
@@ -42,7 +41,7 @@
     }
   });
 
-  const availableQuantity = $derived(() => {
+  const availableQuantity = $derived.by(() => {
     const maxOrder = event.maxTicketsPerOrder || 10;
     if (!event.dates) return maxOrder;
     const session = event.dates.find((d: any) => d.id === selectedSessionId);
@@ -68,213 +67,479 @@
         sessionId: selectedSessionId,
       });
       successResult = result;
-      // Close after delay or show success inline
     } catch (err: any) {
       regError = err.message || "Registration failed. Please try again.";
     } finally {
       submitting = false;
     }
   }
-
 </script>
 
-<div class="site-container detail-shell">
-  <!-- Left Column: Media & Content -->
-  <div>
-    <div class="detail-media mb-8">
-      {#if event.imageUrl}
-        <img src={event.imageUrl} alt={event.title} />
-      {:else}
-        <div class="w-full h-full flex items-center justify-center text-gray-400">
-          <CalendarDays size={64} opacity={0.3} />
+<div class="site-container">
+  <div class="event-layout">
+    <!-- Left Column: Story & Details -->
+    <div class="event-story">
+      <header class="event-header">
+        <div class="event-flags">
+          {#if deliveryLabel}
+            <span class="flag flag-delivery">{deliveryLabel}</span>
+          {/if}
+          {#if event.status === 'ongoing'}
+            <span class="flag flag-status">Ongoing</span>
+          {/if}
         </div>
-      {/if}
-    </div>
-    
-    <div class="rich-text">
-      <h2 class="site-h2 mb-6">About this event</h2>
-      {#if event.description}
-        <!-- Safe render if it's HTML, but for now we render as text/html depending on format -->
-        <!-- Fallback: using @html as content from favcrm is usually safe HTML -->
-        <div class="prose prose-slate max-w-none">
-          {@html event.description}
-        </div>
-      {:else}
-        <p>No description provided.</p>
-      {/if}
-    </div>
-  </div>
-
-  <!-- Right Column: Sticky Sidebar -->
-  <div class="detail-copy">
-    <div>
-      <div class="flex items-center gap-3 mb-4">
-        {#if deliveryLabel}
-          <span class="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded-full">
-            {deliveryLabel}
-          </span>
-        {/if}
-        {#if event.status === 'ongoing'}
-          <span class="px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700 rounded-full">
-            Ongoing
-          </span>
-        {/if}
-      </div>
-      
-      <h1 class="site-h2 mb-4">{event.title}</h1>
-      
-      <div class="price mb-6">{formattedPrice}</div>
-      
-      <div class="flex flex-col gap-4 text-gray-600 mb-8 border-y border-gray-100 py-6">
-        {#if formattedDate}
-          <div class="flex items-start gap-3">
-            <CalendarDays size={20} class="text-gray-400 mt-0.5" />
-            <div>
-              <div class="font-medium text-gray-900">Date & Time</div>
-              <div class="text-sm mt-0.5">{formattedDate}</div>
-            </div>
-          </div>
-        {/if}
-        {#if event.location}
-          <div class="flex items-start gap-3 mt-2">
-            <MapPin size={20} class="text-gray-400 mt-0.5" />
-            <div>
-              <div class="font-medium text-gray-900">Location</div>
-              <div class="text-sm mt-0.5">{event.location}</div>
-            </div>
-          </div>
-        {/if}
-      </div>
-      
-      {#if successResult}
-        <div class="bg-emerald-50 border border-emerald-100 p-6 rounded-xl text-center">
-          <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Ticket size={24} />
-          </div>
-          <h3 class="text-emerald-800 font-bold text-lg mb-2">Registration Confirmed!</h3>
-          <p class="text-emerald-600 text-sm mb-6">
-            We've sent the details to {email}.
-          </p>
-          <a href="/member/bookings" class="btn-site btn-site--primary w-full">
-            View My Tickets
-          </a>
-        </div>
-      {:else}
-        <button 
-          type="button"
-          onclick={() => showRegistration = true}
-          class="btn-site btn-site--primary btn-site--lg w-full"
-          disabled={event.remainingQuota === 0 || event.status === 'past'}
-        >
-          {event.remainingQuota === 0 ? 'Sold Out' : 'Register Now'}
-        </button>
         
-        {#if event.remainingQuota !== null && event.remainingQuota > 0 && event.remainingQuota <= 10}
-          <p class="text-center text-sm text-amber-600 font-medium mt-3">
-            Only {event.remainingQuota} spots remaining!
-          </p>
-        {/if}
+        <h1 class="event-title">{event.title}</h1>
+        
+        <div class="event-quick-meta">
+          {#if formattedDate}
+            <div class="meta-row">
+              <span class="meta-icon"><CalendarDays size={18} strokeWidth={1.5} /></span>
+              <span class="meta-text">{formattedDate}</span>
+            </div>
+          {/if}
+          {#if event.location}
+            <div class="meta-row">
+              <span class="meta-icon"><MapPin size={18} strokeWidth={1.5} /></span>
+              <span class="meta-text">{event.location}</span>
+            </div>
+          {/if}
+        </div>
+      </header>
+
+      {#if event.imageUrl}
+        <figure class="event-hero-image">
+          <img src={event.imageUrl} alt={event.title} />
+        </figure>
       {/if}
+      
+      <div class="event-description rich-text prose prose-slate max-w-none">
+        {#if event.description}
+          <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+          {@html event.description}
+        {:else}
+          <p class="text-gray-500 italic">No description provided for this event.</p>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Right Column: Registration Panel -->
+    <div class="event-sidebar">
+      <div class="registration-panel">
+        <div class="panel-header">
+          <div class="price-display">
+            <span class="price-amount">{formattedPrice}</span>
+            <span class="price-label">per ticket</span>
+          </div>
+          
+          <div class="availability-badge">
+            {#if event.remainingQuota === 0}
+              <span class="status-out">Sold Out</span>
+            {:else if event.remainingQuota !== null && event.remainingQuota <= 5}
+              <span class="status-low">Only {event.remainingQuota} left</span>
+            {:else}
+              <span class="status-ok">Available</span>
+            {/if}
+          </div>
+        </div>
+
+        <div class="panel-body">
+          {#if successResult}
+            <div class="success-state animate-in fade-in zoom-in duration-500">
+              <div class="success-icon">
+                <CheckCircle2 size={32} />
+              </div>
+              <h3 class="success-title">You're on the list!</h3>
+              <p class="success-desc">
+                We've sent a confirmation email to <strong>{email}</strong>. 
+                Your tickets are secured.
+              </p>
+              <a href="/member/events" class="btn-site btn-site--primary w-full">
+                View My Tickets <ArrowRight size={16} class="ml-2" />
+              </a>
+            </div>
+          {:else if event.status === 'past'}
+            <div class="ended-state">
+              <p>This event has already ended.</p>
+            </div>
+          {:else if event.remainingQuota === 0}
+            <div class="ended-state">
+              <p>All tickets have been claimed.</p>
+            </div>
+          {:else}
+            <form onsubmit={handleRegister} class="registration-form">
+              <div class="form-section-title">Registration Details</div>
+              
+              {#if event.dates.length > 1}
+                <div class="field-group">
+                  <label for="session" class="elegant-label">Select Session</label>
+                  <div class="select-wrapper">
+                    <select id="session" bind:value={selectedSessionId} class="elegant-input" required>
+                      <option value="" disabled>Choose a date & time</option>
+                      {#each event.dates as session}
+                        <option value={session.id} disabled={!session.available}>
+                          {formatEventDate([session] as any)} 
+                          {!session.available ? '(Unavailable)' : ''}
+                        </option>
+                      {/each}
+                    </select>
+                  </div>
+                </div>
+              {/if}
+              
+              <div class="field-group">
+                <label for="guestName" class="elegant-label">Full Name</label>
+                <input type="text" id="guestName" bind:value={guestName} class="elegant-input" required placeholder="Jane Doe" />
+              </div>
+              
+              <div class="field-group">
+                <label for="email" class="elegant-label">Email Address</label>
+                <input type="email" id="email" bind:value={email} class="elegant-input" required placeholder="jane@example.com" />
+              </div>
+              
+              <div class="grid-2-col">
+                <div class="field-group">
+                  <label for="phone" class="elegant-label">Phone</label>
+                  <input type="tel" id="phone" bind:value={phone} class="elegant-input" placeholder="+1 234 567 8900" />
+                </div>
+                
+                <div class="field-group">
+                  <label for="quantity" class="elegant-label">Quantity</label>
+                  <div class="select-wrapper">
+                    <select id="quantity" bind:value={quantity} class="elegant-input" required>
+                      {#each Array(availableQuantity) as _, i}
+                        <option value={i + 1}>{i + 1}</option>
+                      {/each}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              {#if regError}
+                <div class="error-banner">
+                  <AlertCircle size={16} strokeWidth={2} />
+                  <span>{regError}</span>
+                </div>
+              {/if}
+              
+              <Button 
+                type="submit" 
+                size="lg"
+                disabled={submitting || !selectedSessionId}
+                class="w-full h-[56px] text-base"
+              >
+                {#if submitting}
+                  <Loader2 class="w-5 h-5 animate-spin mx-auto" />
+                {:else}
+                  <span>Confirm Registration</span>
+                  <ArrowRight size={18} />
+                {/if}
+              </Button>
+            </form>
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Registration Modal / Drawer -->
-{#if showRegistration && !successResult}
-  <div class="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/40 backdrop-blur-sm p-4 sm:p-0">
-    <!-- Click outside to close -->
-    <div role="button" tabindex="-1" aria-label="Close" onkeydown={(e) => e.key === "Escape" && !submitting && (showRegistration = false)} class="absolute inset-0" onclick={() => !submitting && (showRegistration = false)}></div>
-    
-    <div class="relative w-full max-w-md h-full sm:h-[100vh] bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-      <div class="flex items-center justify-between p-6 border-b border-gray-100">
-        <h2 class="text-xl font-bold text-gray-900">Register for Event</h2>
-        <button 
-          onclick={() => !submitting && (showRegistration = false)}
-          class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
-          disabled={submitting}
-        >
-          ✕
-        </button>
-      </div>
-      
-      <div class="flex-1 overflow-y-auto p-6">
-        <div class="mb-6 flex gap-4">
-          {#if event.imageUrl}
-            <img src={event.imageUrl} alt="" class="w-16 h-16 object-cover rounded-lg bg-gray-100" />
-          {/if}
-          <div>
-            <h3 class="font-semibold text-gray-900 leading-tight">{event.title}</h3>
-            <div class="text-sm text-gray-500 mt-1">{formattedPrice}</div>
-          </div>
-        </div>
-        
-        <form id="reg-form" onsubmit={handleRegister} class="space-y-5">
-          <!-- Session Selection -->
-          {#if event.dates.length > 1}
-            <div class="field">
-              <label class="field-label" for="session">Select Session</label>
-              <select id="session" bind:value={selectedSessionId} class="form-select w-full h-11" required>
-                <option value="" disabled>Choose a date & time</option>
-                {#each event.dates as session}
-                  <option 
-                    value={session.id} 
-                    disabled={!session.available}
-                  >
-                    {formatEventDate([session] as any)} 
-                    {!session.available ? '(Unavailable)' : ''}
-                  </option>
-                {/each}
-              </select>
-            </div>
-          {/if}
-          
-          <div class="field">
-            <label class="field-label" for="guestName">Full Name</label>
-            <input type="text" id="guestName" bind:value={guestName} class="field-input" required placeholder="Jane Doe" />
-          </div>
-          
-          <div class="field">
-            <label class="field-label" for="email">Email Address</label>
-            <input type="email" id="email" bind:value={email} class="field-input" required placeholder="jane@example.com" />
-          </div>
-          
-          <div class="field">
-            <label class="field-label" for="phone">Phone Number (Optional)</label>
-            <input type="tel" id="phone" bind:value={phone} class="field-input" placeholder="+1 234 567 8900" />
-          </div>
-          
-          <div class="field">
-            <label class="field-label" for="quantity">Quantity</label>
-            <select id="quantity" bind:value={quantity} class="form-select w-full h-11" required>
-              {#each Array(availableQuantity()) as _, i}
-                <option value={i + 1}>{i + 1}</option>
-              {/each}
-            </select>
-          </div>
-          
-          {#if regError}
-            <div class="p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm flex gap-2 items-start">
-              <AlertCircle size={16} class="mt-0.5 flex-shrink-0" />
-              <span>{regError}</span>
-            </div>
-          {/if}
-        </form>
-      </div>
-      
-      <div class="p-6 border-t border-gray-100 bg-gray-50">
-        <button 
-          form="reg-form"
-          type="submit" 
-          disabled={submitting || !selectedSessionId}
-          class="btn-site btn-site--primary btn-site--lg w-full relative"
-        >
-          {#if submitting}
-            <Loader2 class="w-5 h-5 animate-spin mx-auto" />
-          {:else}
-            Confirm Registration
-          {/if}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+<style>
+  /* Base Layout */
+  .event-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+    padding: clamp(40px, 7vw, 80px) 0;
+  }
+
+  @media (max-width: 900px) {
+    .event-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Left Column: Story */
+  .event-story {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .event-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .event-flags {
+    display: flex;
+    gap: 8px;
+  }
+
+  .flag {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .flag-delivery {
+    background: var(--ink);
+    color: var(--paper, #fff);
+  }
+
+  .flag-status {
+    background: #10b981;
+    color: white;
+  }
+
+  .event-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--ink, #111);
+    margin: 0;
+  }
+
+  .event-quick-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line, #e5e7eb);
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    color: var(--ink-soft, #2a2a2a);
+    font-size: 1.05rem;
+  }
+
+  .meta-icon {
+    color: var(--muted, #6b6b6b);
+    margin-top: 2px;
+  }
+
+  .event-hero-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 0 0 40px 0;
+    background: #f3f4f6;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+
+  .event-hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .event-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--ink-soft, #2a2a2a);
+  }
+
+  /* Right Column: Panel */
+  .event-sidebar {
+    position: sticky;
+    top: clamp(24px, 4vw, 40px);
+  }
+
+  .registration-panel {
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--line, #e5e7eb);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(17, 17, 17, 0.06), 0 1px 3px rgba(17, 17, 17, 0.03);
+  }
+
+  .panel-header {
+    background: #f8f7f4;
+    padding: 32px;
+    border-bottom: 1px solid var(--line, #e5e7eb);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-display {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .price-amount {
+    font-family: var(--font-mono);
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink, #111);
+    letter-spacing: -0.02em;
+  }
+
+  .price-label {
+    font-size: 0.85rem;
+    color: var(--muted, #6b6b6b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .availability-badge {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .status-out { color: #dc2626; font-weight: 600; }
+  .status-low { color: #d97706; font-weight: 600; }
+  .status-ok  { color: #059669; }
+
+  .panel-body {
+    padding: 32px;
+  }
+
+  /* Form Styles */
+  .registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-section-title {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink, #111);
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--ink, #111);
+    padding-bottom: 12px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .grid-2-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .elegant-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft, #2a2a2a);
+  }
+
+  .elegant-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    background: #ffffff;
+    border: 1px solid var(--line, #e5e7eb);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--ink, #111);
+    transition: all 200ms ease;
+    font-family: var(--font-sans);
+  }
+
+  .elegant-input:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--ink, #111);
+    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.05);
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    content: "↓";
+    font-family: system-ui;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--ink, #111);
+  }
+
+  select.elegant-input {
+    appearance: none;
+    padding-right: 40px;
+  }
+
+  .error-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  /* Success & Ended States */
+  .success-state {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: #d1fae5;
+    color: #059669;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .success-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--ink, #111);
+    margin-bottom: 12px;
+  }
+
+  .success-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-soft, #2a2a2a);
+    margin-bottom: 32px;
+  }
+
+  .ended-state {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--muted, #6b6b6b);
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+</style>

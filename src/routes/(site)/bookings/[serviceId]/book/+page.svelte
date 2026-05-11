@@ -580,7 +580,7 @@
     place-items: center;
     min-width: 64px;
     padding: 10px 12px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 10px;
     background: var(--surface, #fff);
     color: var(--ink, #111);
@@ -593,7 +593,7 @@
   }
   .date-chip.is-active {
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-color: var(--ink, #111);
   }
   .date-chip-weekday {
@@ -627,7 +627,7 @@
     place-items: center;
     gap: 6px;
     padding: 14px 10px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 10px;
     background: var(--surface, #fff);
     color: var(--ink, #111);
@@ -653,7 +653,7 @@
     font-size: 13px;
   }
   .staff-avatar--any {
-    background: #f1efe9;
+    background: #f3f4f6;
     color: var(--muted, #6b6b6b);
   }
   .staff-name {
@@ -670,7 +670,7 @@
     display: grid;
     gap: 2px;
     padding: 12px 8px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 8px;
     background: var(--surface, #fff);
     color: var(--ink, #111);
@@ -682,7 +682,7 @@
   }
   .slot-chip.is-active {
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-color: var(--ink, #111);
   }
   .slot-chip.is-disabled {
@@ -691,7 +691,7 @@
   }
   .slot-chip--skeleton {
     height: 60px;
-    background: #f1efe9;
+    background: #f3f4f6;
     pointer-events: none;
   }
   .skeleton-line {
@@ -745,7 +745,7 @@
     gap: 12px;
     align-items: center;
     padding: 12px 14px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 10px;
     background: var(--surface, #fff);
     text-align: left;
@@ -764,7 +764,7 @@
     height: 18px;
     display: grid;
     place-items: center;
-    border: 1.5px solid var(--line, #e6e4de);
+    border: 1.5px solid var(--line, #e5e7eb);
     border-radius: 4px;
     color: var(--paper, #fff);
   }
@@ -797,7 +797,7 @@
     gap: 14px;
     padding: clamp(20px, 2vw, 28px);
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-radius: var(--radius-card, 10px);
   }
   .booking-summary :global(.eyebrow) {
@@ -869,7 +869,7 @@
   .booking-summary-amount {
     font-family: var(--font-display);
     font-size: 1.75rem;
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     letter-spacing: -0.01em;
     text-transform: none;
   }
@@ -887,7 +887,7 @@
     gap: 12px;
     padding: clamp(32px, 4vw, 56px);
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
     text-align: center;
   }

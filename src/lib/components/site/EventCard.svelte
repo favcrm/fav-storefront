@@ -4,63 +4,194 @@
 
   let { event }: { event: any } = $props();
 
+  const href = $derived(`/events/${event.slug}`);
+  const image = $derived(event.imageUrl);
   const formattedDate = $derived(formatEventDate(event.dates));
   const formattedPrice = $derived(formatEventPrice(event));
   const deliveryLabel = $derived(getDeliveryModeLabel(event.deliveryMode));
 </script>
 
-<a href="/events/{event.slug}" class="listing-card group" style="text-decoration: none;">
-  <div class="relative w-full aspect-[4/3] overflow-hidden rounded-t-lg -mx-[28px] -mt-[28px] mb-2 bg-[#f1efe9]">
-    {#if event.imageUrl}
-      <img src={event.imageUrl} alt={event.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+<a class="event-card" {href}>
+  <div class="event-card-media">
+    {#if image}
+      <img src={image} alt={event.title} loading="lazy" />
     {:else}
-      <div class="w-full h-full flex items-center justify-center text-gray-400">
-        <CalendarDays size={32} opacity={0.5} />
-      </div>
+      <span class="image-fallback">
+        <CalendarDays size={28} strokeWidth={1.4} />
+      </span>
     {/if}
-    <div class="absolute top-3 left-3 flex gap-2">
+    <div class="event-card-flags">
       {#if deliveryLabel}
-        <span class="px-2.5 py-1 text-xs font-semibold bg-white/90 backdrop-blur text-gray-900 rounded-md shadow-sm">
-          {deliveryLabel}
-        </span>
+        <span class="event-card-flag event-card-flag--delivery">{deliveryLabel}</span>
       {/if}
       {#if event.status === 'ongoing'}
-        <span class="px-2.5 py-1 text-xs font-semibold bg-emerald-500 text-white rounded-md shadow-sm">
-          Ongoing
-        </span>
+        <span class="event-card-flag event-card-flag--status">Ongoing</span>
       {/if}
     </div>
   </div>
-
-  <div class="flex flex-col gap-3">
-    <h2 class="listing-title text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">{event.title}</h2>
+  
+  <div class="event-card-body">
+    <h3 class="event-card-title">{event.title}</h3>
     
-    <div class="flex flex-col gap-2 text-sm text-gray-600">
+    <div class="event-card-meta">
       {#if formattedDate}
-        <div class="flex items-center gap-2">
-          <CalendarDays size={14} class="opacity-70 flex-shrink-0" />
-          <span class="line-clamp-1">{formattedDate}</span>
-        </div>
+        <span class="event-card-meta-item">
+          <CalendarDays size={14} strokeWidth={1.6} />
+          {formattedDate}
+        </span>
+      {/if}
+      {#if formattedDate && event.location}
+        <span class="event-card-meta-dot" aria-hidden="true">·</span>
       {/if}
       {#if event.location}
-        <div class="flex items-center gap-2">
-          <MapPin size={14} class="opacity-70 flex-shrink-0" />
-          <span class="line-clamp-1">{event.location}</span>
-        </div>
+        <span class="event-card-meta-item">
+          <MapPin size={14} strokeWidth={1.6} />
+          {event.location}
+        </span>
       {/if}
     </div>
 
-    <div class="listing-meta mt-2 pt-4 border-t border-gray-100 flex justify-between items-center">
-      <span class="text-sm font-medium text-gray-500">
+    <div class="event-card-footer">
+      <div class="event-card-availability">
         {#if event.remainingQuota !== null && event.remainingQuota <= 5 && event.remainingQuota > 0}
-          <span class="text-amber-600">Only {event.remainingQuota} left</span>
+          <span class="availability-low">Only {event.remainingQuota} left</span>
         {:else if event.remainingQuota === 0}
-          <span class="text-red-600 font-semibold">Sold Out</span>
+          <span class="availability-out">Sold Out</span>
         {:else}
-          Tickets Available
+          <span class="availability-ok">Available</span>
         {/if}
-      </span>
-      <span class="listing-price font-bold text-gray-900 text-base">{formattedPrice}</span>
+      </div>
+      <span class="event-card-price">{formattedPrice}</span>
     </div>
   </div>
 </a>
+
+<style>
+  .event-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--surface, #fff);
+    border: 1px solid var(--line, #e5e7eb);
+    border-radius: var(--radius-card, 10px);
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+  .event-card:hover {
+    border-color: var(--ink, #111);
+    transform: translateY(-2px);
+    box-shadow: 0 1px 0 rgb(17 17 17 / 4%), 0 12px 28px rgb(17 17 17 / 8%);
+  }
+  .event-card-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #f3f4f6;
+    overflow: hidden;
+  }
+  .event-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .event-card:hover .event-card-media img {
+    transform: scale(1.04);
+  }
+  .event-card-media .image-fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--muted, #6b6b6b);
+  }
+  .event-card-flags {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 6px;
+  }
+  .event-card-flag {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .event-card-flag--delivery {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--ink, #111);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .event-card-flag--status {
+    background: #10b981;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .event-card-body {
+    display: grid;
+    gap: 8px;
+    padding: clamp(16px, 1.8vw, 22px);
+    align-content: start;
+  }
+  .event-card-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink, #111);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .event-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-soft, #2a2a2a);
+    margin-top: 4px;
+  }
+  .event-card-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .event-card-meta-dot {
+    color: var(--muted, #6b6b6b);
+  }
+  .event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line, #e5e7eb);
+  }
+  .event-card-availability {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .availability-low {
+    color: #d97706; /* amber-600 */
+  }
+  .availability-out {
+    color: #dc2626; /* red-600 */
+  }
+  .availability-ok {
+    color: var(--muted, #6b6b6b);
+  }
+  .event-card-price {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.95rem;
+    color: var(--ink, #111);
+  }
+</style>

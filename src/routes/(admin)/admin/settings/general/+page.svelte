@@ -226,9 +226,9 @@
 
       <!-- Booking Policies -->
       <div class="space-y-4">
-        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
+        <h3 class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">
           Booking Policies
-        </label>
+        </h3>
         
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">

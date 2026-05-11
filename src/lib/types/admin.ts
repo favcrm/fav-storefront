@@ -939,3 +939,52 @@ export interface ManualEarnInput {
   reference?: string;
   transactionType?: string;
 }
+
+export interface BlogCategoryAdmin {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface BlogPostAdmin {
+  id: string;
+  type: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  status: "draft" | "scheduled" | "published" | "archived";
+  visibility: "public" | "private" | "members_only";
+  featuredImage: string | null;
+  authorId: string | null;
+  parentId: string | null;
+  sortOrder: number;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  categories?: BlogCategoryAdmin[];
+}
+
+export interface BlogPostDetailAdmin extends BlogPostAdmin {
+  blocks: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  meta: Record<string, unknown> | null;
+}
+
+export interface CreateBlogPostInput {
+  type?: string;
+  title: string;
+  slug?: string;
+  excerpt?: string;
+  blocks?: string; // JSON string of blocks, or HTML
+  status: "draft" | "scheduled" | "published" | "archived";
+  visibility?: "public" | "private" | "members_only";
+  publishedAt?: string | null;
+  seoTitle?: string;
+  seoDescription?: string;
+  categoryIds?: string[];
+  tagIds?: string[];
+  parentId?: string | null;
+}
+
+export interface UpdateBlogPostInput extends Partial<CreateBlogPostInput> {}

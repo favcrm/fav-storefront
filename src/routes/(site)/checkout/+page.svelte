@@ -617,7 +617,7 @@
     margin: 0;
     padding: 12px 14px;
     background: #f9fafb;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 8px;
     color: var(--muted, #6b6b6b);
     font-size: 13px;
@@ -643,7 +643,7 @@
     gap: 14px;
     align-items: center;
     padding: 14px 16px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 10px;
     cursor: pointer;
     transition: border-color 120ms, background 120ms;
@@ -733,7 +733,7 @@
   }
   .checkout-summary {
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 12px;
     padding: 24px;
     display: flex;
@@ -757,7 +757,7 @@
     gap: 8px;
     max-height: 220px;
     overflow-y: auto;
-    border-bottom: 1px solid var(--line, #e6e4de);
+    border-bottom: 1px solid var(--line, #e5e7eb);
     padding-bottom: 12px;
   }
   .checkout-items li {
@@ -808,7 +808,7 @@
     justify-content: space-between;
     align-items: baseline;
     padding-top: 12px;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
     margin-bottom: 4px;
   }
   .checkout-total-amount {

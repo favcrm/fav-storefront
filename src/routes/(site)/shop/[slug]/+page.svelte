@@ -269,7 +269,7 @@
     left: 14px;
     padding: 5px 10px;
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-radius: 4px;
     font-size: 11px;
     font-weight: 600;
@@ -307,7 +307,7 @@
   .variation-chip {
     min-width: 44px;
     padding: 8px 14px;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     background: var(--surface, #fff);
     border-radius: 999px;
     font-size: 13px;
@@ -320,7 +320,7 @@
   }
   .variation-chip.is-active {
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-color: var(--ink, #111);
   }
   .variation-chip.is-unavailable {
@@ -345,7 +345,7 @@
   .qty-stepper {
     display: inline-flex;
     align-items: center;
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 999px;
     overflow: hidden;
   }
@@ -360,7 +360,7 @@
     transition: background 120ms;
   }
   .qty-step-btn:hover:not(:disabled) {
-    background: var(--line, #e6e4de);
+    background: var(--line, #e5e7eb);
   }
   .qty-step-btn:disabled {
     color: #cbd5e1;

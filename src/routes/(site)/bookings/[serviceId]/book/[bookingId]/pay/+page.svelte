@@ -294,7 +294,7 @@
     gap: 18px;
     padding: clamp(20px, 2.4vw, 32px);
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
   }
   .pay-element-heading {
@@ -302,7 +302,7 @@
     align-items: center;
     gap: 8px;
     padding-bottom: 14px;
-    border-bottom: 1px solid var(--line, #e6e4de);
+    border-bottom: 1px solid var(--line, #e5e7eb);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -328,7 +328,7 @@
   }
   .skeleton-row {
     height: 14px;
-    background: var(--line, #e6e4de);
+    background: var(--line, #e5e7eb);
     border-radius: 4px;
     animation: shimmer 1.4s linear infinite;
   }
@@ -354,7 +354,7 @@
     gap: 14px;
     padding: clamp(20px, 2vw, 28px);
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-radius: var(--radius-card, 10px);
   }
   .pay-summary :global(.eyebrow) {
@@ -403,7 +403,7 @@
   .pay-total-amount {
     font-family: var(--font-display);
     font-size: 1.75rem;
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     letter-spacing: -0.01em;
     text-transform: none;
   }
@@ -416,7 +416,7 @@
     letter-spacing: 0.08em;
     text-transform: capitalize;
     background: rgba(255, 255, 255, 0.16);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
   }
   .status-pill--pending {
     background: #fef3c7;

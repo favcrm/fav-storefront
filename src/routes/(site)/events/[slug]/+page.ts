@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
   try {
     const event = await sdk.events.get(params.slug);
     return { event };
-  } catch (err) {
+  } catch (_err) {
     throw error(404, "Event not found");
   }
 };

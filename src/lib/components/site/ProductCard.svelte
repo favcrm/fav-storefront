@@ -85,7 +85,7 @@
     height: 32px;
     border-radius: 999px;
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -125,7 +125,7 @@
     left: 8px;
     padding: 4px 8px;
     background: var(--ink, #111);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-radius: 4px;
     font-size: 10px;
     font-weight: 600;

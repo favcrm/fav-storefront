@@ -13,6 +13,7 @@
     Megaphone,
     Settings,
     X,
+    FileText,
   } from "lucide-svelte";
 
   interface Props {
@@ -63,6 +64,12 @@
         { href: "/admin/promotions", label: "Promotions", icon: Ticket },
         { href: "/admin/rewards", label: "Rewards", icon: Gift },
         { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
+      ],
+    },
+    {
+      label: "Content",
+      items: [
+        { href: "/admin/blog", label: "Blog", icon: FileText },
       ],
     },
     {

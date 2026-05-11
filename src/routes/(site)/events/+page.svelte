@@ -16,7 +16,7 @@
 
 <section class="site-container site-section site-section--tight">
   {#if data.events.length}
-    <div class="listing-grid">
+    <div class="event-grid">
       {#each data.events as event}
         <EventCard {event} />
       {/each}
@@ -29,3 +29,11 @@
     />
   {/if}
 </section>
+
+<style>
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: clamp(18px, 2vw, 28px);
+  }
+</style>

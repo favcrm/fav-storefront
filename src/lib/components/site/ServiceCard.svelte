@@ -68,7 +68,7 @@
     display: grid;
     grid-template-rows: auto 1fr;
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
     overflow: hidden;
     color: inherit;
@@ -84,7 +84,7 @@
   .service-card-media {
     position: relative;
     aspect-ratio: 4 / 3;
-    background: #f1efe9;
+    background: #f3f4f6;
     overflow: hidden;
   }
   .service-card-media img {
@@ -109,7 +109,7 @@
     left: 10px;
     padding: 4px 8px;
     background: rgba(17, 17, 17, 0.88);
-    color: var(--paper, #fafaf7);
+    color: var(--paper, #ffffff);
     border-radius: 4px;
     font-size: 10px;
     font-weight: 600;
@@ -172,7 +172,7 @@
     justify-content: space-between;
     margin-top: 10px;
     padding-top: 12px;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
   }
   .service-card-price {
     font-family: var(--font-mono);

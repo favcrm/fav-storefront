@@ -233,7 +233,7 @@
     gap: 14px;
     padding: clamp(28px, 4vw, 48px);
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
     text-align: left;
   }
@@ -282,7 +282,7 @@
     gap: 12px;
     margin: 8px 0 0;
     padding-top: 16px;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
   }
   .success-rows div {
     display: flex;
@@ -359,8 +359,8 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    background: var(--paper, #fafaf7);
-    border: 1px dashed var(--line, #e6e4de);
+    background: var(--paper, #ffffff);
+    border: 1px dashed var(--line, #e5e7eb);
     border-radius: 8px;
   }
   .qr-block code {
@@ -385,7 +385,7 @@
   }
   .skeleton-row {
     height: 14px;
-    background: var(--line, #e6e4de);
+    background: var(--line, #e5e7eb);
     border-radius: 4px;
     animation: shimmer 1.4s linear infinite;
   }

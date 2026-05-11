@@ -137,7 +137,7 @@
     align-items: center;
     padding: 16px 18px;
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: var(--radius-card, 10px);
     color: inherit;
   }
@@ -152,7 +152,7 @@
   .skeleton-line {
     height: 10px;
     width: 70%;
-    background: var(--line, #e6e4de);
+    background: var(--line, #e5e7eb);
     border-radius: 4px;
   }
   .skeleton-line--sm {

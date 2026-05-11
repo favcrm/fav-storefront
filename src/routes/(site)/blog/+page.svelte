@@ -1,12 +1,16 @@
 <script lang="ts">
   import { Newspaper } from "lucide-svelte";
   import PageHeader from "$lib/components/site/PageHeader.svelte";
-  import ListingCard from "$lib/components/site/ListingCard.svelte";
+  import BlogCard from "$lib/components/site/BlogCard.svelte";
   import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
 </script>
+
+<svelte:head>
+  <title>Journal</title>
+</svelte:head>
 
 <PageHeader
   eyebrow="Journal"
@@ -16,13 +20,9 @@
 
 <section class="site-container site-section site-section--tight">
   {#if data.posts.length}
-    <div class="listing-grid">
+    <div class="blog-grid">
       {#each data.posts as post}
-        <ListingCard
-          title={post.title}
-          description={post.excerpt ??
-            "Read the latest from this storefront."}
-        />
+        <BlogCard {post} />
       {/each}
     </div>
   {:else}
@@ -33,3 +33,11 @@
     />
   {/if}
 </section>
+
+<style>
+  .blog-grid {
+    display: grid;
+    gap: clamp(20px, 3vw, 32px);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+</style>

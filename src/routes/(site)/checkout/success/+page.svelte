@@ -166,7 +166,7 @@
     max-width: 520px;
     text-align: left;
     background: var(--surface, #fff);
-    border: 1px solid var(--line, #e6e4de);
+    border: 1px solid var(--line, #e5e7eb);
     border-radius: 12px;
     padding: 24px;
     margin-top: 12px;
@@ -184,7 +184,7 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
     padding-top: 12px;
     display: flex;
     flex-direction: column;
@@ -210,7 +210,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
     padding-top: 12px;
   }
   .receipt-rows div {
@@ -233,7 +233,7 @@
     justify-content: space-between;
     align-items: baseline;
     padding-top: 12px;
-    border-top: 1px solid var(--line, #e6e4de);
+    border-top: 1px solid var(--line, #e5e7eb);
     font-size: 16px;
   }
   .receipt-total-amount {
