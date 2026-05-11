@@ -39,6 +39,12 @@ import type {
   PaymentTransaction,
   RefundInput,
   RefundResult,
+  PaymentMethod,
+  CreatePaymentMethodInput,
+  UpdatePaymentMethodInput,
+  ShippingMethod,
+  CreateShippingMethodInput,
+  UpdateShippingMethodInput,
   Promotion,
   PromotionDetail,
   CreatePromotionInput,
@@ -517,6 +523,65 @@ export const adminInvoicesApi = {
     window.open(url, "_blank");
     setTimeout(() => URL.revokeObjectURL(url), 30000);
   },
+};
+
+// ── Payment Methods ──
+
+export const adminPaymentMethodsApi = {
+  list: () => adminApiRequest<PaymentMethod[]>("/v6/merchant/payment-methods"),
+
+  get: (id: string) =>
+    adminApiRequest<PaymentMethod>(`/v6/merchant/payment-methods/${id}`),
+
+  create: (data: CreatePaymentMethodInput) =>
+    adminApiRequest<PaymentMethod>("/v6/merchant/payment-methods", {
+      method: "POST",
+      body: data,
+    }),
+
+  update: (id: string, data: UpdatePaymentMethodInput) =>
+    adminApiRequest<PaymentMethod>(`/v6/merchant/payment-methods/${id}`, {
+      method: "PATCH",
+      body: data,
+    }),
+
+  delete: (id: string) =>
+    adminApiRequest<{ id: string }>(`/v6/merchant/payment-methods/${id}`, {
+      method: "DELETE",
+    }),
+};
+
+// ── Shipping Methods ──
+
+export const adminShippingMethodsApi = {
+  list: () =>
+    adminApiRequest<ShippingMethod[]>("/v6/merchant/shop/shipping-methods"),
+
+  get: (id: number) =>
+    adminApiRequest<ShippingMethod>(`/v6/merchant/shop/shipping-methods/${id}`),
+
+  create: (data: CreateShippingMethodInput) =>
+    adminApiRequest<ShippingMethod>("/v6/merchant/shop/shipping-methods", {
+      method: "POST",
+      body: data,
+    }),
+
+  update: (id: number, data: UpdateShippingMethodInput) =>
+    adminApiRequest<ShippingMethod>(
+      `/v6/merchant/shop/shipping-methods/${id}`,
+      {
+        method: "PATCH",
+        body: data,
+      },
+    ),
+
+  delete: (id: number) =>
+    adminApiRequest<{ id: number }>(
+      `/v6/merchant/shop/shipping-methods/${id}`,
+      {
+        method: "DELETE",
+      },
+    ),
 };
 
 // ── Payment Transactions ──

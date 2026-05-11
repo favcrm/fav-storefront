@@ -1,5 +1,9 @@
 import { get } from "svelte/store";
 import { adminAuthStore, adminLogout } from "$lib/stores/admin-auth";
+import {
+  adminPaymentMethodsApi,
+  adminShippingMethodsApi,
+} from "$lib/api/admin";
 import { ApiError } from "$lib/types/api";
 import { unwrapApiResponse } from "./unwrap";
 
@@ -310,7 +314,8 @@ export async function seedDemoData(
   };
 
   let total = 0;
-  if (scope.products) total += CATEGORIES.length + PRODUCTS.length;
+  total += 1; // Payment Method
+  if (scope.products) total += CATEGORIES.length + PRODUCTS.length + 1; // +1 Shipping Method
   if (scope.services) total += SERVICES.length;
   if (scope.events) total += buildEvents().length;
 
@@ -319,6 +324,27 @@ export async function seedDemoData(
     done += 1;
     onProgress?.({ step, done, total });
   };
+
+  try {
+    const existingPayments = await adminPaymentMethodsApi.list();
+    if (existingPayments.length === 0) {
+      await adminPaymentMethodsApi.create({
+        name: "Bank Transfer / PayMe",
+        type: "bank_transfer",
+        instructions:
+          "Please transfer to HSBC 123-456-789 and WhatsApp the receipt.",
+        isActive: true,
+        bookingEnabled: true,
+        shopEnabled: true,
+        eventEnabled: true,
+      });
+    }
+  } catch (err) {
+    result.errors.push(
+      `Payment Method: ${err instanceof Error ? err.message : "failed"}`,
+    );
+  }
+  tick("Payment Method");
 
   if (scope.products) {
     const idByName = new Map<string, number>();
@@ -339,18 +365,14 @@ export async function seedDemoData(
     }
 
     for (const p of PRODUCTS) {
-      const { categoryName, ...rest } = p;
-      const categoryId = idByName.get(categoryName);
-      const body = {
-        ...rest,
-        status: "ACTIVE" as const,
-        stockStatus: "in_stock" as const,
-        trackInventory: true,
-        onlineEnabled: true,
-        ...(categoryId ? { categoryIds: [categoryId] } : {}),
-      };
       try {
-        await post<{ productId: number }>("/v6/merchant/shop/products", body);
+        const payload = { ...p } as Record<string, unknown>;
+        if (payload.categoryName && typeof payload.categoryName === "string") {
+          payload.categories = [idByName.get(payload.categoryName)].filter(
+            Boolean,
+          );
+        }
+        await post("/v6/merchant/shop/products", payload);
         result.productsCreated += 1;
       } catch (err) {
         result.errors.push(
@@ -359,6 +381,24 @@ export async function seedDemoData(
       }
       tick(`Product: ${p.name}`);
     }
+
+    try {
+      const existingShipping = await adminShippingMethodsApi.list();
+      if (existingShipping.length === 0) {
+        await adminShippingMethodsApi.create({
+          name: "Standard Delivery",
+          price: 30,
+          freeShippingThreshold: 500,
+          isActive: true,
+          estimatedDays: "2-3 business days",
+        });
+      }
+    } catch (err) {
+      result.errors.push(
+        `Shipping Method: ${err instanceof Error ? err.message : "failed"}`,
+      );
+    }
+    tick("Shipping Method");
   }
 
   if (scope.services) {

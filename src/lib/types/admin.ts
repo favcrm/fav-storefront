@@ -194,6 +194,68 @@ export interface CreateVariationInput {
 
 export type UpdateVariationInput = Partial<CreateVariationInput>;
 
+// ── Payment Methods ──
+
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  type: string;
+  instructions: string | null;
+  isActive: boolean;
+  position: number;
+  gatewayConfigId: string | null;
+  gatewayName: string | null;
+  bookingEnabled: boolean;
+  shopEnabled: boolean;
+  eventEnabled: boolean;
+  membershipEnabled: boolean;
+}
+
+export interface CreatePaymentMethodInput {
+  name: string;
+  type: string;
+  instructions?: string | null;
+  isActive?: boolean;
+  position?: number;
+  gatewayConfigId?: string | null;
+  bookingEnabled?: boolean;
+  shopEnabled?: boolean;
+  eventEnabled?: boolean;
+  membershipEnabled?: boolean;
+}
+
+export interface UpdatePaymentMethodInput extends Partial<CreatePaymentMethodInput> {
+  instructions?: string | null;
+  gatewayConfigId?: string | null;
+}
+
+// ── Shipping Methods ──
+
+export interface ShippingMethod {
+  id: number;
+  name: string;
+  description: string | null;
+  price: number;
+  freeShippingThreshold: number | null;
+  estimatedDays: string | null;
+  position: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateShippingMethodInput {
+  name: string;
+  description?: string;
+  price: number;
+  freeShippingThreshold?: number | null;
+  estimatedDays?: string | null;
+  position?: number;
+  isActive?: boolean;
+}
+
+export type UpdateShippingMethodInput = Partial<CreateShippingMethodInput>;
+
 // ── Categories ──
 
 export interface Category {

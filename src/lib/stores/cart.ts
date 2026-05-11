@@ -27,17 +27,15 @@ function lineKey(productId: number, variationId?: number): string {
   return variationId ? `${productId}:${variationId}` : `${productId}`;
 }
 
-function pickImage(product: CartProduct): string | null {
-  if ("image" in product) return product.image ?? null;
-  if (!Array.isArray(product.images) || product.images.length === 0) {
-    return null;
-  }
-  return (
-    product.images.find((img) => img.isPrimary)?.src ??
-    product.images[0]?.src ??
-    null
-  );
-}
+// function pickImage(product: CartProduct): string | null {
+//   if ("image" in product) return product.image ?? null;
+//   if (!Array.isArray(product.images) || product.images.length === 0) {
+//     return null;
+//   }
+//   return (
+//     product.images.find((i) => i.isPrimary)?.src ?? product.images[0].src
+//   );
+// }
 
 function toCartProduct(
   product: CartProduct,
@@ -55,10 +53,7 @@ function toCartProduct(
     status: product.status,
     productType: product.productType,
     stockStatus: product.stockStatus,
-    categoryName:
-      "categoryName" in product
-        ? product.categoryName
-        : null,
+    categoryName: "categoryName" in product ? product.categoryName : null,
     categories: [],
     categorySlug: null,
     isVariable: false,
