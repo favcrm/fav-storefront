@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { LogOut } from "lucide-svelte";
+  import { CalendarDays, LogOut } from "lucide-svelte";
   import { goto } from "$app/navigation";
   import { browser } from "$app/environment";
   import { createFavCRM } from "$lib/favcrm";
@@ -58,10 +58,16 @@
     {#if member?.membershipTier?.name}
       <span class="member-tier">{member.membershipTier.name}</span>
     {/if}
-    <Button variant="secondary" onclick={signOut}>
-      <LogOut size={16} strokeWidth={1.6} />
-      Sign out
-    </Button>
+    <div class="member-actions">
+      <Button href="/member/bookings" variant="secondary">
+        <CalendarDays size={16} strokeWidth={1.6} />
+        My bookings
+      </Button>
+      <Button variant="ghost" onclick={signOut}>
+        <LogOut size={16} strokeWidth={1.6} />
+        Sign out
+      </Button>
+    </div>
   </aside>
 
   <div class="member-details">
@@ -92,3 +98,11 @@
     {/if}
   </div>
 </section>
+
+<style>
+  .member-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

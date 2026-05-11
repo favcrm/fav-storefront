@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { CalendarDays } from "lucide-svelte";
-  import { formatMoney } from "$lib/format";
+  import { CalendarDays, Search } from "lucide-svelte";
   import PageHeader from "$lib/components/site/PageHeader.svelte";
-  import ListingCard from "$lib/components/site/ListingCard.svelte";
+  import ServiceCard from "$lib/components/site/ServiceCard.svelte";
   import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
@@ -16,23 +15,45 @@
 />
 
 <section class="site-container site-section site-section--tight">
+  <form class="toolbar" method="GET">
+    <label>
+      <Search size={16} strokeWidth={1.6} />
+      <input name="q" placeholder="Search services" value={data.search ?? ""} />
+    </label>
+    <select name="category" aria-label="Category">
+      <option value="">All categories</option>
+      {#each data.categories as category}
+        <option value={category} selected={data.category === category}>
+          {category}
+        </option>
+      {/each}
+    </select>
+    <button class="btn-site btn-site--secondary" type="submit">Filter</button>
+  </form>
+
   {#if data.services.length}
-    <div class="listing-grid">
-      {#each data.services as service}
-        <ListingCard
-          icon={CalendarDays}
-          title={service.name}
-          description={service.description ??
-            "Book this service through your FavCRM workspace."}
-          price={formatMoney(service.price)}
-        />
+    <div class="service-grid">
+      {#each data.services as service (service.id)}
+        <ServiceCard {service} />
       {/each}
     </div>
   {:else}
     <EmptyState
       icon={CalendarDays}
-      title="No services published"
-      description="Add bookable services in your FavCRM workspace to list them here."
+      title={data.search || data.category
+        ? "No matching services"
+        : "No services published"}
+      description={data.search || data.category
+        ? "Try clearing the search or selecting a different category."
+        : "Add bookable services in your FavCRM workspace to list them here."}
     />
   {/if}
 </section>
+
+<style>
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: clamp(18px, 2vw, 28px);
+  }
+</style>

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@favcrm/sdk": "^0.4.1",
+    "@stripe/stripe-js": "^9.4.0",
     "@sveltejs/adapter-vercel": "^5.10.2",
     "@sveltejs/kit": "^2.0.0",
     "clsx": "^2.1.1",
