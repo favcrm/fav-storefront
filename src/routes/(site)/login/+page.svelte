@@ -6,20 +6,34 @@
   import Button from "$lib/components/site/Button.svelte";
   import Field from "$lib/components/site/Field.svelte";
   import Eyebrow from "$lib/components/site/Eyebrow.svelte";
+  import { onMount } from "svelte";
 
-  let phone = $state("");
+  let identifier = $state("");
   let otp = $state("");
   let sent = $state(false);
   let loading = $state(false);
   let error = $state("");
+  let channel = $state<"whatsapp" | "sms" | "email">("whatsapp");
 
   const sdk = createFavCRM();
+
+  onMount(async () => {
+    try {
+      const res = await sdk.auth.getLoginChannel();
+      if (res && res.channel) {
+        channel = res.channel;
+      }
+    } catch {
+      // Keep default
+    }
+  });
 
   async function sendOtp() {
     loading = true;
     error = "";
     try {
-      await sdk.auth.sendOtp(phone);
+      const payload = channel === "email" ? { email: identifier } : { phone: identifier };
+      await sdk.auth.sendOtp(payload);
       sent = true;
     } catch (err) {
       error = err instanceof Error ? err.message : "Unable to send OTP";
@@ -32,12 +46,13 @@
     loading = true;
     error = "";
     try {
-      const result = await sdk.auth.verifyOtp(phone, otp);
+      const payload = channel === "email" ? { email: identifier } : { phone: identifier };
+      const result = await sdk.auth.verifyOtp(payload, otp);
       login({
         jwt: result.accessToken ?? result.token,
         memberUuid: result.memberUuid,
         memberName: result.memberName,
-        phone: result.phone,
+        phone: result.phone ?? null,
       });
       await goto("/member");
     } catch (err) {
@@ -56,19 +71,32 @@
       <h1>Sign in to your account</h1>
     </div>
     <p class="auth-sub">
-      {sent
-        ? `We sent a one-time code to ${phone}.`
-        : "Enter your phone number — we'll send you a one-time code."}
+      {#if sent}
+        We sent a one-time code to {identifier}.
+      {:else}
+        Enter your {channel === "email" ? "email address" : "phone number"} — we'll send you a one-time code.
+      {/if}
     </p>
 
-    <Field
-      label="Phone"
-      name="phone"
-      type="tel"
-      autocomplete="tel"
-      placeholder="+852 6000 0000"
-      bind:value={phone}
-    />
+    {#if channel === "email"}
+      <Field
+        label="Email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        placeholder="your@email.com"
+        bind:value={identifier}
+      />
+    {:else}
+      <Field
+        label="Phone"
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        placeholder="+852 6000 0000"
+        bind:value={identifier}
+      />
+    {/if}
 
     {#if sent}
       <Field
@@ -93,7 +121,7 @@
           otp = "";
         }}
       >
-        Use a different number
+        Use a different {channel === "email" ? "email" : "number"}
       </Button>
     {:else}
       <Button onclick={sendOtp} disabled={loading} size="lg">

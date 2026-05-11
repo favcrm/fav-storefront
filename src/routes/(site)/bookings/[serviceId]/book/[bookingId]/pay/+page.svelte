@@ -29,7 +29,7 @@
   let submitting = $state(false);
 
   const amount = $derived(Number(booking?.totalPrice ?? 0));
-  const currency = $derived(booking?.currency ?? "HKD");
+  // const currency = $derived(booking?.currency ?? "HKD");
 
   function formatTime(value: string): string {
     const [h, m] = value.split(":").map(Number);

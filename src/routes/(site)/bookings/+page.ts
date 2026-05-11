@@ -31,7 +31,8 @@ function filterServices(
   return services.filter((service) => {
     if (category && service.categoryName !== category) return false;
     if (!needle) return true;
-    const haystack = `${service.name} ${service.description ?? ""}`.toLowerCase();
+    const haystack =
+      `${service.name} ${service.description ?? ""}`.toLowerCase();
     return haystack.includes(needle);
   });
 }

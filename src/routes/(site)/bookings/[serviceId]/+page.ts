@@ -12,9 +12,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
 
   if (!service) throw error(404, "Service not found");
 
-  const related = allServices
-    .filter((s) => s.id !== service.id)
-    .slice(0, 3);
+  const related = allServices.filter((s) => s.id !== service.id).slice(0, 3);
 
   return { service, related };
 };

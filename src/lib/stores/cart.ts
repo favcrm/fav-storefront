@@ -58,14 +58,12 @@ function toCartProduct(
     categoryName:
       "categoryName" in product
         ? product.categoryName
-        : (product.categories[0]?.name ?? null),
-    categorySlug:
-      "categorySlug" in product
-        ? product.categorySlug
-        : (product.categories[0]?.slug ?? null),
-    categories: product.categories,
-    isVariable: product.isVariable,
-    image: pickImage(product),
+        : null,
+    categories: [],
+    categorySlug: null,
+    isVariable: false,
+    image: "image" in product ? product.image : null,
+    isFeatured: false,
   };
 }
 

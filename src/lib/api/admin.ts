@@ -819,9 +819,46 @@ export const adminSettingsApi = {
   getAnalytics: () =>
     adminApiRequest<AnalyticsConfig>("/v6/merchant/settings/analytics"),
 
+  getBookingConfig: () =>
+    adminApiRequest<BookingConfig>("/v6/merchant/settings/booking"),
+
+  updateBookingConfig: (data: Partial<BookingConfig>) =>
+    adminApiRequest<BookingConfig>("/v6/merchant/settings/booking", {
+      method: "PATCH",
+      body: data,
+    }),
+
+  getLoginChannel: () =>
+    adminApiRequest<LoginChannelConfig>(
+      "/v6/merchant/settings/customer-portal-login",
+    ),
+
+  updateLoginChannel: (data: { channel: string }) =>
+    adminApiRequest<LoginChannelConfig>(
+      "/v6/merchant/settings/customer-portal-login",
+      {
+        method: "PATCH",
+        body: data,
+      },
+    ),
+
   updateAnalytics: (data: Partial<AnalyticsConfig>) =>
     adminApiRequest<AnalyticsConfig>("/v6/merchant/settings/analytics", {
       method: "PATCH",
       body: data,
     }),
 };
+
+export interface BookingConfig {
+  allowMemberCancellation?: boolean;
+  memberCancellationCutoffHours?: number | null;
+  globalCooldownDays?: number | null;
+  cooldownMessage?: string | null;
+  blockUntilFinished?: boolean;
+}
+
+export interface LoginChannelConfig {
+  channel: "whatsapp" | "sms" | "email";
+  smsBalance?: number;
+  smsBalanceLow?: boolean;
+}

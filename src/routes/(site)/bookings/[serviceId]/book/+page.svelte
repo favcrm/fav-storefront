@@ -235,7 +235,6 @@
 
   $effect(() => {
     if (!mounted) return;
-    selectedStaffId;
     if (selectedDate) loadSlots(selectedDate);
   });
 </script>
@@ -337,7 +336,7 @@
           <Eyebrow>Time</Eyebrow>
           {#if loadingSlots}
             <div class="slot-grid">
-              {#each Array(8) as _, i}
+              {#each Array(8) as _}
                 <span class="slot-chip slot-chip--skeleton" aria-hidden="true">
                   <span class="skeleton-line"></span>
                   <span class="skeleton-line skeleton-line--sm"></span>
