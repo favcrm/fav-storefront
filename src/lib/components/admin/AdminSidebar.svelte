@@ -3,6 +3,7 @@
   import {
     LayoutDashboard,
     ShoppingBag,
+    CalendarDays,
     Package,
     Tag,
     Users,
@@ -44,6 +45,7 @@
       label: "Commerce",
       items: [
         { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+        { href: "/admin/events", label: "Events", icon: CalendarDays },
         { href: "/admin/products", label: "Products", icon: Package },
         { href: "/admin/categories", label: "Categories", icon: Tag },
       ],

@@ -858,6 +858,36 @@ export const adminLoyaltyApi = {
 
 // ── Settings ──
 
+// ── Events ──
+
+export interface AdminEventRegistration {
+  id: string;
+  eventId: string;
+  eventSlug: string;
+  eventTitle: string;
+  sessionStartTime: string | null;
+  guestName: string;
+  email: string;
+  phone: string | null;
+  quantity: number;
+  totalAmount: string;
+  currency: string;
+  status: string;
+  paymentRequired: boolean;
+  registeredAt: string;
+}
+
+export const adminEventsApi = {
+  list: (params?: ListParams) =>
+    listResource<any>("/v6/merchant/events", params),
+
+  get: (id: string) =>
+    adminApiRequest<any>(`/v6/merchant/events/${id}`),
+    
+  listRegistrations: (eventId: string, params?: ListParams) =>
+    listResource<AdminEventRegistration>(`/v6/merchant/events/${eventId}/registrations`, params),
+};
+
 export interface AnalyticsConfig {
   gtmId: string | null;
   ga4Id: string | null;

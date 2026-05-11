@@ -1,7 +1,7 @@
 <script lang="ts">
   import { CalendarDays } from "lucide-svelte";
   import PageHeader from "$lib/components/site/PageHeader.svelte";
-  import ListingCard from "$lib/components/site/ListingCard.svelte";
+  import EventCard from "$lib/components/site/EventCard.svelte";
   import EmptyState from "$lib/components/site/EmptyState.svelte";
   import type { PageData } from "./$types";
 
@@ -18,13 +18,7 @@
   {#if data.events.length}
     <div class="listing-grid">
       {#each data.events as event}
-        <ListingCard
-          icon={CalendarDays}
-          title={event.title}
-          description={event.introduction ??
-            event.content ??
-            "Event details are available soon."}
-        />
+        <EventCard {event} />
       {/each}
     </div>
   {:else}

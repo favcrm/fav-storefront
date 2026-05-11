@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CalendarDays, LogOut } from "lucide-svelte";
+  import { CalendarDays, LogOut, Ticket } from "lucide-svelte";
   import { goto } from "$app/navigation";
   import { browser } from "$app/environment";
   import { createFavCRM } from "$lib/favcrm";
@@ -62,6 +62,10 @@
       <Button href="/member/bookings" variant="secondary">
         <CalendarDays size={16} strokeWidth={1.6} />
         My bookings
+      </Button>
+      <Button href="/member/events" variant="secondary">
+        <Ticket size={16} strokeWidth={1.6} />
+        My events
       </Button>
       <Button variant="ghost" onclick={signOut}>
         <LogOut size={16} strokeWidth={1.6} />
