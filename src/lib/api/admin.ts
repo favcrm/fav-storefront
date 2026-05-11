@@ -881,6 +881,21 @@ export const adminSettingsApi = {
   getProfile: () =>
     adminApiRequest<CompanyProfile>("/v6/merchant/settings/profile"),
 
+  updateProfile: (data: Partial<CompanyProfile>) =>
+    adminApiRequest<CompanyProfile>("/v6/merchant/settings/profile", {
+      method: "PATCH",
+      body: data,
+    }),
+
+  uploadLogo: (file: File) => {
+    const formData = new FormData();
+    formData.append("logo", file);
+    return adminApiUpload<{ logo_url: string }>(
+      "/v6/merchant/settings/profile/logo",
+      formData,
+    );
+  },
+
   getAnalytics: () =>
     adminApiRequest<AnalyticsConfig>("/v6/merchant/settings/analytics"),
 
