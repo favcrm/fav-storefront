@@ -18,7 +18,29 @@
 
   const stripProducts = $derived(data.products.slice(0, 3));
   const hasProducts = $derived(data.products.length > 0);
+
+  let schemaOrg = $derived({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Storefront",
+    "url": typeof window !== "undefined" ? window.location.origin : undefined,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": (typeof window !== "undefined" ? window.location.origin : "") + "/shop?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>Home - Storefront</title>
+  <meta name="description" content="Welcome to the official Storefront. Browse our products, book services, and explore upcoming events." />
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+</svelte:head>
 
 <section class="site-container hero">
   <svg

@@ -8,6 +8,11 @@
   let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+  <title>Shop - Catalog</title>
+  <meta name="description" content="Browse our entire product catalog. Find the best items with live pricing and inventory." />
+</svelte:head>
+
 <PageHeader
   eyebrow="Shop"
   title="Catalog"

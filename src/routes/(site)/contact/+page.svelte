@@ -37,7 +37,30 @@
       loading = false;
     }
   }
+
+  let schemaOrg = $derived({
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Us",
+    "description": "Get in touch with us for inquiries, support, or general questions.",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Storefront",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": brandEmail || undefined,
+        "contactType": "customer support"
+      }
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>Contact Us</title>
+  <meta name="description" content="Get in touch with us. We're here to help with any questions, support, or inquiries." />
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+</svelte:head>
 
 <section class="site-container contact-shell">
   <aside class="contact-aside">

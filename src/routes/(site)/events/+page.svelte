@@ -8,6 +8,11 @@
   let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+  <title>Events - Upcoming</title>
+  <meta name="description" content="Discover our upcoming workshops, launches, and member-only gatherings. Register online." />
+</svelte:head>
+
 <PageHeader
   eyebrow="Events"
   title="Upcoming"

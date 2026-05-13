@@ -8,6 +8,11 @@
   let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+  <title>Services & Bookings</title>
+  <meta name="description" content="Reserve a session with one of our specialists. Browse our available services and book online." />
+</svelte:head>
+
 <PageHeader
   eyebrow="Bookings"
   title="Services"
