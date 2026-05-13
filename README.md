@@ -124,6 +124,74 @@ setup examples live at [github.com/favcrm/mcp](https://github.com/favcrm/mcp).
 | FavCRM MCP    | Agentic setup and operations from Cursor, Smithery, Claude-compatible clients, or other MCP clients. | Optional, recommended for AI-assisted setup.                                                       |
 | `favcrm` CLI  | FavCRM-managed merchant agent runtimes where credentials are injected automatically.                 | No. Template users should not run `favcrm login` or depend on the CLI for normal storefront setup. |
 
+This template tracks the latest published `@favcrm/sdk` package. If you are
+developing inside the FavCRM monorepo, check `../v2/favcrm-sdk` for upcoming SDK
+types and helpers before adding local endpoint wrappers. Do not commit a
+`file:` dependency to this public template unless the template is intentionally
+being used as a monorepo-only fixture.
+
+## Customer MCP Server
+
+This storefront also exposes a public customer-facing MCP server for AI agents
+that help shoppers and visitors interact with the site. It uses the same
+customer portal API as the storefront and does not require merchant/admin MCP
+keys.
+
+Endpoints:
+
+| Endpoint            | Purpose                                                                            |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| `/api/mcp`          | Preferred Streamable HTTP MCP endpoint.                                            |
+| `/api/mcp/sse`      | Compatibility endpoint for clients still configured with an SSE-style URL.         |
+| `/api/mcp/messages` | Message endpoint alias for older client configurations.                            |
+
+Advertise `${VITE_SITE_URL}/api/mcp` to customer agents. The generated
+`/llms.txt` also lists these endpoints and tools for crawlers and agent clients.
+
+### Customer MCP User Flows
+
+**Shopping**
+
+1. Use `search_products` to find products.
+2. Use `get_product_details` to inspect price, stock, options, and variations.
+3. Use `list_shop_options` for categories, payment methods, and shipping
+   methods when the cart total is known.
+4. Optionally call `list_shop_offers` for cart/product offers.
+5. Use `create_shop_order` with customer and shipping details.
+6. Send the returned `paymentUrl` or `nextUrl` to the customer to complete
+   checkout.
+7. Optionally call `check_shop_order_payment_status` after payment.
+
+**Booking**
+
+1. Use `list_booking_services`.
+2. Use `get_booking_service` for service details, addons, staff, and resources.
+3. Use `get_booking_slots` for a chosen date.
+4. Use `create_guest_booking` with `guestInfo`.
+5. Send the returned `bookingUrl` or `paymentUrl` to the customer.
+
+**Event Registration**
+
+1. Use `list_upcoming_events`.
+2. Use `get_event_details` to pick a session.
+3. Use `get_customer_login_channel`, then `request_customer_login_otp`.
+4. Ask the customer for the OTP and call `verify_customer_login_otp`.
+5. Use `register_event` with the returned `customerToken`.
+6. For paid events, call `start_event_payment` and route the customer through
+   the storefront payment experience.
+7. Later, use `list_my_event_registrations` and `get_event_access` for ticket
+   history and online/hybrid event access.
+
+**Blog Reading**
+
+1. Use `search_blog_posts`.
+2. Use `read_blog_post`.
+3. Prefer returned `markdownUrl` values when an agent-friendly page is needed.
+
+Authenticated customer tools require a customer token from
+`verify_customer_login_otp`. Public browse/read tools and guest shopping or
+booking tools do not require merchant credentials.
+
 ## API Integration Best Practice
 
 Use `@favcrm/sdk` as the public integration boundary. App code should call SDK
