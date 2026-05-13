@@ -140,7 +140,32 @@
       `Only ${result.available} available — cart adjusted to maximum.`,
     );
   }
+
+  let schemaOrg = $derived({
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": data.product.name,
+    "image": baseImage || undefined,
+    "description": data.product.description || undefined,
+    "sku": data.product.sku || undefined,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD", // Adjust if currency is dynamic from store
+      "price": typeof data.product.price === 'number' ? (data.product.price / 100).toFixed(2) : undefined,
+      "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      "url": typeof window !== "undefined" ? window.location.href : undefined
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>{data.product.name}</title>
+  {#if data.product.description}
+    <meta name="description" content={data.product.description} />
+  {/if}
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+</svelte:head>
 
 <section class="site-container detail-shell">
   <div class="detail-media">

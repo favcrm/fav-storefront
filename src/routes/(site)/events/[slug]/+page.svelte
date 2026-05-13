@@ -73,7 +73,36 @@
       submitting = false;
     }
   }
+
+  let schemaOrg = $derived({
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": event.name,
+    "description": event.description || undefined,
+    "image": event.coverImage || undefined,
+    "startDate": event.startDate,
+    "endDate": event.endDate || event.startDate,
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "name": event.location || "TBA",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": event.location || "TBA"
+      }
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>{event.name}</title>
+  {#if event.description}
+    <meta name="description" content={event.description} />
+  {/if}
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+</svelte:head>
 
 <div class="site-container">
   <div class="event-layout">

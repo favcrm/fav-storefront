@@ -33,6 +33,21 @@
     if (!post.blocks) return false;
     return post.blocks.trim().startsWith('<') && !post.blocks.trim().startsWith('{"');
   });
+
+  // Schema.org structured data for SEO and Agents
+  let schemaOrg = $derived({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.seoTitle || post.title,
+    "description": post.seoDescription || post.excerpt || undefined,
+    "image": post.featuredImage || undefined,
+    "datePublished": post.publishedAt || post.createdAt,
+    "dateModified": post.updatedAt,
+    "author": {
+      "@type": "Organization",
+      "name": "Storefront" // Could be customized if author name available
+    }
+  });
 </script>
 
 <svelte:head>
@@ -40,6 +55,9 @@
   {#if post.seoDescription || post.excerpt}
     <meta name="description" content={post.seoDescription || post.excerpt} />
   {/if}
+  <link rel="alternate" type="text/markdown" href="/blog/{post.slug}/llms.txt" />
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
 </svelte:head>
 
 <article class="blog-post">

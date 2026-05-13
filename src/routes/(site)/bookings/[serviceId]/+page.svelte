@@ -30,7 +30,32 @@
     const m = mins % 60;
     return m === 0 ? `${h} hr` : `${h} hr ${m} min`;
   }
+
+  let schemaOrg = $derived({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": service.name,
+    "description": service.description || undefined,
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Storefront"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "USD", // Adjust if dynamic
+      "price": typeof service.price === 'number' ? (service.price / 100).toFixed(2) : undefined
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>{service.name}</title>
+  {#if service.description}
+    <meta name="description" content={service.description} />
+  {/if}
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+</svelte:head>
 
 <section class="site-container service-detail">
   <a class="back-link" href="/bookings">
