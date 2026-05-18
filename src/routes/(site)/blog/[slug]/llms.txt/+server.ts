@@ -3,8 +3,8 @@ import { createFavCRM } from "$lib/favcrm";
 import type { RequestHandler } from "./$types";
 import { editorjsToMarkdown } from "$lib/utils/markdown";
 
-export const GET: RequestHandler = async ({ params, fetch, url }) => {
-  const sdk = createFavCRM(fetch);
+export const GET: RequestHandler = async ({ params, fetch, url, locals }) => {
+  const sdk = createFavCRM({ fetch, companyId: locals.companyId });
   try {
     const post = await sdk.blog.getBySlug(params.slug);
     if (!post) throw error(404, "Post not found");

@@ -2,8 +2,9 @@ import { error } from "@sveltejs/kit";
 import { createFavCRM } from "$lib/favcrm";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ fetch }) => {
-  const client = createFavCRM(fetch);
+export const load: PageLoad = async ({ fetch, parent }) => {
+  const { companyId } = await parent();
+  const client = createFavCRM({ fetch, companyId });
   try {
     const [shipping, payment] = await Promise.all([
       client.shop.listShippingMethods(),

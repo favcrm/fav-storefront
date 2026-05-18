@@ -2,8 +2,9 @@ import { createFavCRM } from "$lib/favcrm";
 import type { BookingService } from "@favcrm/sdk";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ fetch, url }) => {
-  const sdk = createFavCRM(fetch);
+export const load: PageLoad = async ({ fetch, url, parent }) => {
+  const { companyId } = await parent();
+  const sdk = createFavCRM({ fetch, companyId });
   const services = await sdk.bookings.listServices().catch(() => []);
 
   const categories = uniqueCategories(services);

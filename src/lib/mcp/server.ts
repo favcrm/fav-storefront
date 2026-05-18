@@ -41,7 +41,11 @@ function mcpToolError(message: string): CallToolResult {
   };
 }
 
-function clampLimit(limit: number | undefined, fallback = 10, max = 50): number {
+function clampLimit(
+  limit: number | undefined,
+  fallback = 10,
+  max = 50,
+): number {
   if (typeof limit !== "number" || !Number.isFinite(limit)) return fallback;
   return Math.max(1, Math.min(Math.floor(limit), max));
 }
@@ -66,7 +70,10 @@ function checkoutSuccessUrl(orderId: string, origin: string): string {
   );
 }
 
-function blogPostUrls(slug: string, origin: string): { url: string; markdownUrl: string } {
+function blogPostUrls(
+  slug: string,
+  origin: string,
+): { url: string; markdownUrl: string } {
   return {
     url: resolveUrl(`/blog/${slug}`, origin),
     markdownUrl: resolveUrl(`/blog/${slug}/llms.txt`, origin),
@@ -83,31 +90,42 @@ function bookingServiceUrls(
   };
 }
 
-function otpIdentifier(input: { phone?: string; email?: string }): OtpIdentifier | null {
+function otpIdentifier(input: {
+  phone?: string;
+  email?: string;
+}): OtpIdentifier | null {
   if (input.email) return { email: input.email };
   if (input.phone) return { phone: input.phone };
   return null;
 }
 
-function customerSdk(fetchFn: FetchFn, customerToken?: string): ReturnType<typeof createFavCRM> {
-  const sdk = createFavCRM(fetchFn);
+function customerSdk(
+  fetchFn: FetchFn,
+  companyId: string | undefined,
+  customerToken?: string,
+): ReturnType<typeof createFavCRM> {
+  const sdk = createFavCRM({ fetch: fetchFn, companyId });
   if (customerToken) sdk.setToken(customerToken);
   return sdk;
 }
 
 async function customerPortalGet<T>(
   fetchFn: FetchFn,
+  companyIdHint: string | undefined,
   path: string,
   params?: Record<string, string>,
 ): Promise<T> {
-  const { apiUrl, companyId } = requireStorefrontConfig();
+  const { apiUrl, companyId } = requireStorefrontConfig(companyIdHint);
   const query = params ? `?${new URLSearchParams(params)}` : "";
-  const response = await fetchFn(`${apiUrl}/v6/customer-portal${path}${query}`, {
-    headers: {
-      Accept: "application/json",
-      "X-Company-Id": companyId,
+  const response = await fetchFn(
+    `${apiUrl}/v6/customer-portal${path}${query}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "X-Company-Id": companyId,
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Customer portal request failed: ${response.status}`);
@@ -120,8 +138,12 @@ async function customerPortalGet<T>(
   return json as T;
 }
 
-export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpServer {
-  const sdk = customerSdk(fetchFn);
+export function createCustomerMcpServer(
+  fetchFn: FetchFn,
+  origin: string,
+  companyId: string | undefined,
+): McpServer {
+  const sdk = customerSdk(fetchFn, companyId);
   const server = new McpServer(
     {
       name: "favcrm-customer-storefront",
@@ -231,19 +253,14 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
         ? sdk.shop.listShippingMethods(order_amount).catch(() => [])
         : Promise.resolve([]);
 
-      const [
-        categories,
-        brands,
-        collections,
-        paymentMethods,
-        shippingMethods,
-      ] = await Promise.all([
-        sdk.shop.listCategories().catch(() => []),
-        sdk.shop.listBrands().catch(() => []),
-        sdk.shop.listCollections().catch(() => []),
-        sdk.shop.listPaymentMethods().catch(() => []),
-        shippingPromise,
-      ]);
+      const [categories, brands, collections, paymentMethods, shippingMethods] =
+        await Promise.all([
+          sdk.shop.listCategories().catch(() => []),
+          sdk.shop.listBrands().catch(() => []),
+          sdk.shop.listCollections().catch(() => []),
+          sdk.shop.listPaymentMethods().catch(() => []),
+          shippingPromise,
+        ]);
 
       return mcpJson({
         categories,
@@ -260,7 +277,13 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
     "List active storefront offers for a cart, product view, category view, or threshold context.",
     {
       context: z
-        .enum(["product_view", "cart", "cart_threshold", "category_view", "post_order"])
+        .enum([
+          "product_view",
+          "cart",
+          "cart_threshold",
+          "category_view",
+          "post_order",
+        ])
         .optional(),
       productId: z.number().optional(),
       productIds: z.array(z.number()).optional(),
@@ -325,6 +348,7 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
       return mcpJson(
         await customerPortalGet(
           fetchFn,
+          companyId,
           `/shop/orders/${encodeURIComponent(orderId)}/payment-status`,
         ),
       );
@@ -413,7 +437,7 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
       creditsUsed: z.string().optional(),
     },
     async (input) => {
-      const authedSdk = customerSdk(fetchFn, input.customerToken);
+      const authedSdk = customerSdk(fetchFn, companyId, input.customerToken);
       const result = await authedSdk.events.register(input);
       return mcpJson({
         ...result,
@@ -430,7 +454,7 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
       registrationId: z.string(),
     },
     async ({ customerToken, registrationId }) => {
-      const authedSdk = customerSdk(fetchFn, customerToken);
+      const authedSdk = customerSdk(fetchFn, companyId, customerToken);
       return mcpJson(await authedSdk.events.startPayment(registrationId));
     },
   );
@@ -442,7 +466,7 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
       customerToken: z.string(),
     },
     async ({ customerToken }) => {
-      const authedSdk = customerSdk(fetchFn, customerToken);
+      const authedSdk = customerSdk(fetchFn, companyId, customerToken);
       return mcpJson(await authedSdk.events.listRegistrations());
     },
   );
@@ -455,7 +479,7 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
       registrationId: z.string(),
     },
     async ({ customerToken, registrationId }) => {
-      const authedSdk = customerSdk(fetchFn, customerToken);
+      const authedSdk = customerSdk(fetchFn, companyId, customerToken);
       return mcpJson(await authedSdk.events.getAccess(registrationId));
     },
   );
@@ -542,7 +566,9 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
         .optional(),
     },
     async (input) => {
-      const booking = await sdk.bookings.createGuest(input as GuestBookingRequest);
+      const booking = await sdk.bookings.createGuest(
+        input as GuestBookingRequest,
+      );
       return mcpJson({
         ...booking,
         bookingUrl: resolveUrl(
@@ -563,10 +589,11 @@ export function createCustomerMcpServer(fetchFn: FetchFn, origin: string): McpSe
 export async function handleCustomerMcpRequest(
   request: Request,
   fetchFn: FetchFn,
+  companyId: string | undefined,
 ): Promise<Response> {
   try {
     const origin = new URL(request.url).origin;
-    const server = createCustomerMcpServer(fetchFn, origin);
+    const server = createCustomerMcpServer(fetchFn, origin, companyId);
     const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
       enableJsonResponse: true,

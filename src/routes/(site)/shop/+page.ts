@@ -1,8 +1,9 @@
 import { createFavCRM } from "$lib/favcrm";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ fetch, url }) => {
-  const sdk = createFavCRM(fetch);
+export const load: PageLoad = async ({ fetch, url, parent }) => {
+  const { companyId } = await parent();
+  const sdk = createFavCRM({ fetch, companyId });
   const search = url.searchParams.get("q") ?? undefined;
   const category_slug = url.searchParams.get("category") ?? undefined;
 

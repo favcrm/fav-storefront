@@ -23,8 +23,9 @@ const TTL_MS = 5 * 60 * 1000;
 
 export async function fetchTenantConfig(
   fetchFn: typeof globalThis.fetch,
+  companyIdHint?: string,
 ): Promise<TenantConfig> {
-  const { apiUrl, companyId } = requireStorefrontConfig();
+  const { apiUrl, companyId } = requireStorefrontConfig(companyIdHint);
   const cached = cache.get(companyId);
   if (cached && cached.expiresAt > Date.now()) return cached.config;
 

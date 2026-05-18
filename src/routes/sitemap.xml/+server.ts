@@ -1,8 +1,8 @@
 import { createFavCRM } from "$lib/favcrm";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ fetch, url }) => {
-  const sdk = createFavCRM(fetch);
+export const GET: RequestHandler = async ({ fetch, url, locals }) => {
+  const sdk = createFavCRM({ fetch, companyId: locals.companyId });
   const baseUrl = url.origin;
 
   // We will fetch lists concurrently where possible

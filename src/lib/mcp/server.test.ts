@@ -28,7 +28,11 @@ async function mcpJson(
   body: unknown,
   fetchFn: FetchFn = vi.fn() as FetchFn,
 ): Promise<JsonRpcResponse> {
-  const response = await handleCustomerMcpRequest(mcpRequest(body), fetchFn);
+  const response = await handleCustomerMcpRequest(
+    mcpRequest(body),
+    fetchFn,
+    "test-company",
+  );
   return response.json() as Promise<JsonRpcResponse>;
 }
 
