@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Lock } from "lucide-svelte";
+  import { CustomerAuthErrorCodes, FavCRMError } from "@favcrm/sdk";
   import { goto } from "$app/navigation";
   import { createFavCRM } from "$lib/favcrm";
   import { login } from "$lib/stores/auth";
@@ -13,6 +14,12 @@
   let sent = $state(false);
   let loading = $state(false);
   let error = $state("");
+  // Set when the OTP was correct but the number can't sign in yet: a WhatsApp
+  // contact that never registered, or several unregistered records the merchant
+  // must merge. This storefront has no signup page, so we only explain and point
+  // the customer to the contact page.
+  let registrationNotice = $state<"required" | "review" | null>(null);
+  let reviewMessage = $state("");
   let channel = $state<"whatsapp" | "sms" | "email">("email");
 
   const sdk = createFavCRM();
@@ -45,6 +52,7 @@
   async function verifyOtp() {
     loading = true;
     error = "";
+    registrationNotice = null;
     try {
       const payload = channel === "email" ? { email: identifier } : { phone: identifier };
       const result = await sdk.auth.verifyOtp(payload, otp);
@@ -56,7 +64,17 @@
       });
       await goto("/member");
     } catch (err) {
-      error = err instanceof Error ? err.message : "Unable to sign in";
+      if (err instanceof FavCRMError && err.code === CustomerAuthErrorCodes.REGISTRATION_REQUIRED) {
+        registrationNotice = "required";
+      } else if (
+        err instanceof FavCRMError &&
+        err.code === CustomerAuthErrorCodes.REGISTRATION_REVIEW_REQUIRED
+      ) {
+        registrationNotice = "review";
+        reviewMessage = err.message;
+      } else {
+        error = err instanceof Error ? err.message : "Unable to sign in";
+      }
     } finally {
       loading = false;
     }
@@ -110,6 +128,22 @@
 
     {#if error}<p class="form-error">{error}</p>{/if}
 
+    {#if registrationNotice === "required"}
+      <div class="notice notice--success" role="status">
+        <span>
+          We already have your number from WhatsApp, but it isn't registered as a member yet.
+          Please <a href="/contact">contact us</a> to finish registering and become a member.
+        </span>
+      </div>
+    {:else if registrationNotice === "review"}
+      <div class="notice notice--error" role="alert">
+        <span>
+          {reviewMessage || "We need to review your details before you can sign in."}
+          Please <a href="/contact">contact us</a> to complete your registration.
+        </span>
+      </div>
+    {/if}
+
     {#if sent}
       <Button onclick={verifyOtp} disabled={loading} size="lg">
         {loading ? "Verifying..." : "Verify and continue"}
@@ -119,6 +153,7 @@
         onclick={() => {
           sent = false;
           otp = "";
+          registrationNotice = null;
         }}
       >
         Use a different {channel === "email" ? "email" : "number"}
