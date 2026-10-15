@@ -22,6 +22,12 @@
   let reviewMessage = $state("");
   let channel = $state<"whatsapp" | "sms" | "email">("email");
 
+
+  function setIdentifier(value: string) {
+    identifier = value;
+    registrationNotice = null;
+    reviewMessage = "";
+  }
   const sdk = createFavCRM();
 
   onMount(async () => {
@@ -103,7 +109,7 @@
         type="email"
         autocomplete="email"
         placeholder="your@email.com"
-        bind:value={identifier}
+        bind:value={() => identifier, setIdentifier}
       />
     {:else}
       <Field
@@ -112,7 +118,7 @@
         type="tel"
         autocomplete="tel"
         placeholder="+852 6000 0000"
-        bind:value={identifier}
+        bind:value={() => identifier, setIdentifier}
       />
     {/if}
 
