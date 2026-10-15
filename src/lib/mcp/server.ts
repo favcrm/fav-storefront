@@ -2,7 +2,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import type { CreateOrderRequest, OtpIdentifier } from "@favcrm/sdk";
+import {
+  CustomerAuthErrorCodes,
+  FavCRMError,
+  type CreateOrderRequest,
+  type OtpIdentifier,
+} from "@favcrm/sdk";
 import { requireStorefrontConfig, SITE_URL } from "$lib/config";
 import { createFavCRM } from "$lib/favcrm";
 
@@ -39,6 +44,47 @@ function mcpToolError(message: string): CallToolResult {
     isError: true,
     content: [{ type: "text", text: message }],
   };
+}
+
+/**
+ * Map the OTP-verify outcomes that are not plain failures: a correct code for a
+ * WhatsApp contact that never registered (REGISTRATION_REQUIRED) or a number
+ * with several unregistered records (REGISTRATION_REVIEW_REQUIRED). The
+ * single-use registration ticket in the error details is deliberately not
+ * returned — it would let the MCP client register on the customer's behalf.
+ */
+function verifyOtpRegistrationError(err: unknown): CallToolResult | null {
+  if (!(err instanceof FavCRMError)) return null;
+
+  if (err.code === CustomerAuthErrorCodes.REGISTRATION_REQUIRED) {
+    const { name, phone } = err.details ?? {};
+    return {
+      ...mcpJson({
+        code: err.code,
+        registrationRequired: true,
+        message:
+          "This number is not a registered member yet (it is known from WhatsApp only). No customerToken was issued; the customer must register as a member before using authenticated tools.",
+        name: typeof name === "string" ? name : null,
+        phone: typeof phone === "string" ? phone : null,
+      }),
+      isError: true,
+    };
+  }
+
+  if (err.code === CustomerAuthErrorCodes.REGISTRATION_REVIEW_REQUIRED) {
+    return {
+      ...mcpJson({
+        code: err.code,
+        registrationReviewRequired: true,
+        message:
+          err.message ||
+          "Please contact the merchant to complete the customer's registration.",
+      }),
+      isError: true,
+    };
+  }
+
+  return null;
 }
 
 function clampLimit(
@@ -193,7 +239,13 @@ export function createCustomerMcpServer(
         return mcpToolError("Provide either phone or email.");
       }
 
-      return mcpJson(await sdk.auth.verifyOtp(identifier, input.otp));
+      try {
+        return mcpJson(await sdk.auth.verifyOtp(identifier, input.otp));
+      } catch (err) {
+        const registrationError = verifyOtpRegistrationError(err);
+        if (registrationError) return registrationError;
+        throw err;
+      }
     },
   );
 

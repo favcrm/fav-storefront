@@ -120,4 +120,72 @@ describe("customer MCP server", () => {
     expect(json.result.isError).toBe(true);
     expect(json.result.content[0].text).toBe("Provide either phone or email.");
   });
+
+  function verifyOtpCall(fetchFn: FetchFn) {
+    return mcpJson(
+      {
+        jsonrpc: "2.0",
+        id: 5,
+        method: "tools/call",
+        params: {
+          name: "verify_customer_login_otp",
+          arguments: { phone: "+85260000000", otp: "123456" },
+        },
+      },
+      fetchFn,
+    );
+  }
+
+  function apiError(status: number, error: unknown): FetchFn {
+    return vi.fn().mockResolvedValue({
+      ok: false,
+      status,
+      statusText: "",
+      json: () => Promise.resolve({ success: false, error }),
+    }) as FetchFn;
+  }
+
+  it("reports REGISTRATION_REQUIRED without leaking the registration ticket", async () => {
+    const json = await verifyOtpCall(
+      apiError(403, {
+        code: "REGISTRATION_REQUIRED",
+        message: "Registration required",
+        details: {
+          registrationTicket: "secret-ticket",
+          name: "WhatsApp Contact",
+          phone: "+85260000000",
+          expiresIn: 900,
+        },
+      }),
+    );
+
+    expect(json.result.isError).toBe(true);
+    const text = json.result.content[0].text;
+    expect(text).not.toContain("secret-ticket");
+    const payload = JSON.parse(text);
+    expect(payload).toMatchObject({
+      code: "REGISTRATION_REQUIRED",
+      registrationRequired: true,
+      name: "WhatsApp Contact",
+      phone: "+85260000000",
+    });
+    expect(payload).not.toHaveProperty("registrationTicket");
+    expect(payload).not.toHaveProperty("customerToken");
+  });
+
+  it("reports REGISTRATION_REVIEW_REQUIRED with the API message", async () => {
+    const json = await verifyOtpCall(
+      apiError(409, {
+        code: "REGISTRATION_REVIEW_REQUIRED",
+        message: "Please contact the store to complete your registration.",
+      }),
+    );
+
+    expect(json.result.isError).toBe(true);
+    expect(JSON.parse(json.result.content[0].text)).toEqual({
+      code: "REGISTRATION_REVIEW_REQUIRED",
+      registrationReviewRequired: true,
+      message: "Please contact the store to complete your registration.",
+    });
+  });
 });

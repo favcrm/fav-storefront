@@ -30,7 +30,7 @@ Available customer tools:
 
 - get_customer_login_channel: see whether login OTP uses email, SMS, or WhatsApp.
 - request_customer_login_otp: send a customer one-time login code.
-- verify_customer_login_otp: verify the code and receive a customerToken for authenticated tools.
+- verify_customer_login_otp: verify the code and receive a customerToken for authenticated tools. If the number is not a registered member yet it returns an error with registrationRequired: true (no customerToken); with registrationReviewRequired: true the customer must contact the store.
 - search_products: search products with live pricing and inventory.
 - get_product_details: read product options, variations, stock, and pricing.
 - list_shop_options: read categories, brands, collections, shipping methods, and payment methods.
